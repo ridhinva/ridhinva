@@ -4,71 +4,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ridhin V | Cyber Network Portfolio</title>
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      margin: 0;
       font-family: "Courier New", monospace;
-      background: radial-gradient(circle at top, #020617, #000000);
-      color: #e5e7eb;
+      background: #000;
+      color: #22c55e;
       overflow-x: hidden;
-    }/* MATRIX BACKGROUND */
-canvas {
+      position: relative;
+    }canvas {
   position: fixed;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
   z-index: -1;
+  background: #000;
 }
 
 nav {
   position: fixed;
-  width: 100%;
   top: 0;
-  background: rgba(2,6,23,0.9);
+  width: 100%;
+  background: rgba(0,0,0,0.85);
   padding: 12px 20px;
   display: flex;
   justify-content: center;
   gap: 25px;
-  border-bottom: 1px solid #0f172a;
-  z-index: 1000;
+  z-index: 10;
 }
 nav a {
   color: #22c55e;
   text-decoration: none;
   font-size: 14px;
-  letter-spacing: 1px;
 }
 nav a:hover { color: #4ade80; }
 
 section {
+  position: relative;
+  z-index: 1;
   min-height: 100vh;
-  padding: 120px 20px 60px;
-  max-width: 1000px;
+  padding: 160px 20px 60px;
+  max-width: 900px;
   margin: auto;
-  animation: glitchFade 1.2s ease;
 }
 
-@keyframes glitchFade {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-h1 {
-  font-size: 42px;
-  color: #22c55e;
-  text-shadow: 0 0 10px #22c55e;
-}
-h2 {
-  color: #4ade80;
-  border-bottom: 1px solid #064e3b;
-  padding-bottom: 6px;
-}
+h1 { font-size: 42px; color: #22c55e; text-shadow: 0 0 10px #22c55e; }
+h2 { color: #4ade80; border-bottom: 1px solid #064e3b; padding-bottom: 6px; margin-bottom: 12px; }
 
 .terminal {
-  background: #020617;
-  border: 1px solid #064e3b;
+  background: rgba(0,0,0,0.6);
   padding: 20px;
   border-radius: 6px;
-  box-shadow: 0 0 20px rgba(34,197,94,0.2);
+  box-shadow: 0 0 20px rgba(34,197,94,0.3);
   margin-top: 20px;
 }
 
@@ -80,89 +67,104 @@ h2 {
 }
 
 .card {
-  background: #020617;
+  background: rgba(0,0,0,0.6);
   border: 1px solid #064e3b;
   padding: 18px;
   border-radius: 8px;
   transition: transform 0.3s, box-shadow 0.3s;
 }
+.card:hover { transform: translateY(-8px); box-shadow: 0 0 25px rgba(34,197,94,0.5); }
 
-.card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 0 25px rgba(34,197,94,0.4);
-}
-
-footer {
-  text-align: center;
-  padding: 30px;
-  background: #020617;
-  border-top: 1px solid #064e3b;
-  color: #22c55e;
-  font-size: 13px;
-}
+footer { text-align: center; padding: 30px; color: #22c55e; font-size: 13px; }
 
   </style>
 </head>
 <body><canvas id="network"></canvas>
 
-<script>
+<nav>
+  <a href="#home">HOME</a>
+  <a href="#experience">EXPERIENCE</a>
+  <a href="#skills">SKILLS</a>
+  <a href="#projects">PROJECTS</a>
+  <a href="#education">EDUCATION</a>
+</nav><section id="home">
+  <h1>> Ridhin V</h1>
+  <div class="terminal">
+    <p>> Technical Support Specialist</p>
+    <p>> Network Administration | L1–L3 Troubleshooting</p>
+    <p>> Routing | Switching | Firewalls | WiFi</p>
+    <p>> Status: ONLINE</p>
+  </div>
+</section><section id="experience">
+  <h2>Experience</h2>
+  <div class="terminal">
+    <p>Liscom Solutions and Services Pvt Ltd (2023–2025)</p>
+    <ul>
+      <li>Network incident monitoring and resolution</li>
+      <li>LAN/WAN, routing, switching, IP troubleshooting</li>
+      <li>Remote support for routers, switches, firewalls</li>
+      <li>Escalation handling with L3 teams</li>
+    </ul>
+  </div>
+</section><section id="skills">
+  <h2>Skills</h2>
+  <div class="cards">
+    <div class="card">Network Administration</div>
+    <div class="card">LAN / WAN</div>
+    <div class="card">Routing & Switching</div>
+    <div class="card">DNS / DHCP</div>
+    <div class="card">VLAN Configuration</div>
+    <div class="card">WiFi Troubleshooting</div>
+    <div class="card">Windows & Linux Support</div>
+    <div class="card">Remote Technical Support</div>
+  </div>
+</section><section id="projects">
+  <h2>Projects</h2>
+  <div class="cards">
+    <div class="card">Drone Project – Live streaming & image transmission</div>
+    <div class="card">Li-Fi Project – Data transmission using light</div>
+  </div>
+</section><section id="education">
+  <h2>Education & Certifications</h2>
+  <div class="terminal">
+    <p>Hardware & Networking – SDC Network Academy</p>
+    <p>Diploma in Electronics Engineering</p>
+    <p>Certifications: CCNP, CCNA, MCSE, RHCE, Network+</p>
+  </div>
+</section><footer>
+  > SYSTEM © 2026 | Ridhin V | Cyber Network Portfolio
+</footer><script>
   const canvas = document.getElementById('network');
   const ctx = canvas.getContext('2d');
   let w, h;
 
-  function resize() {
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
-  }
+  function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
   window.addEventListener('resize', resize);
   resize();
 
   const NODE_COUNT = 90;
   const nodes = [];
-
   for (let i = 0; i < NODE_COUNT; i++) {
-    nodes.push({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 0.6,
-      vy: (Math.random() - 0.5) * 0.6,
-    });
+    nodes.push({ x: Math.random()*w, y: Math.random()*h, vx: (Math.random()-0.5)*0.6, vy: (Math.random()-0.5)*0.6 });
   }
 
   function draw() {
-    ctx.clearRect(0, 0, w, h);
-
-    for (let i = 0; i < nodes.length; i++) {
-      const a = nodes[i];
-      a.x += a.vx;
-      a.y += a.vy;
-
-      if (a.x < 0 || a.x > w) a.vx *= -1;
-      if (a.y < 0 || a.y > h) a.vy *= -1;
-
-      ctx.beginPath();
-      ctx.arc(a.x, a.y, 2, 0, Math.PI * 2);
-      ctx.fillStyle = '#22c55e';
-      ctx.fill();
-
-      for (let j = i + 1; j < nodes.length; j++) {
-        const b = nodes[j];
-        const dx = a.x - b.x;
-        const dy = a.y - b.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 120) {
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.strokeStyle = `rgba(34,197,94,${1 - dist / 120})`;
-          ctx.stroke();
-        }
+    ctx.clearRect(0,0,w,h);
+    for (let i=0;i<nodes.length;i++){
+      let a = nodes[i];
+      a.x+=a.vx; a.y+=a.vy;
+      if(a.x<0||a.x>w)a.vx*=-1;
+      if(a.y<0||a.y>h)a.vy*=-1;
+      ctx.beginPath(); ctx.arc(a.x,a.y,2,0,Math.PI*2); ctx.fillStyle='#22c55e'; ctx.fill();
+      for(let j=i+1;j<nodes.length;j++){
+        let b=nodes[j];
+        let dx=a.x-b.x, dy=a.y-b.y;
+        let dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<120){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(34,197,94,${1-dist/120})`;ctx.stroke();}
       }
     }
     requestAnimationFrame(draw);
   }
-
   draw();
 </script></body>
 </html>
