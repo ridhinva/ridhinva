@@ -266,37 +266,6 @@
     .contact-card .lbl { font-size: 11px; color: var(--text2); font-weight: 500; }
     .contact-card .val { font-size: 14px; font-weight: 700; margin-top: 2px; }
 
-    /* ─── README Modal ─── */
-    .modal-overlay {
-      display: none; position: fixed; inset: 0; z-index: 9999;
-      background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-      justify-content: center; align-items: center; padding: 40px;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal-box {
-      background: #fff; color: #1e293b; max-width: 800px; width: 100%;
-      max-height: 85vh; overflow-y: auto; border-radius: 16px;
-      padding: 32px; position: relative; box-shadow: 0 25px 80px rgba(0,0,0,0.2);
-    }
-    body.dark .modal-box { background: #1e293b; color: #f1f5f9; }
-    .modal-box pre { background: #f1f5f9; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 12px; }
-    body.dark .modal-box pre { background: #0f172a; }
-    .modal-box code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
-    body.dark .modal-box code { background: #0f172a; }
-    .modal-box h1 { font-size: 22px; margin-bottom: 10px; }
-    .modal-box h2 { font-size: 17px; margin: 20px 0 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; }
-    .modal-box a { color: var(--accent); }
-    .modal-box table { border-collapse: collapse; width: 100%; margin: 10px 0; }
-    .modal-box th, .modal-box td { border: 1px solid #e2e8f0; padding: 6px 10px; font-size: 12px; }
-    .modal-box th { background: #f8fafc; }
-    .modal-close {
-      position: sticky; top: 0; float: right;
-      background: #f1f5f9; border: none; border-radius: 8px;
-      color: #64748b; padding: 6px 14px; cursor: pointer;
-      font-size: 16px; transition: all 0.2s;
-    }
-    .modal-close:hover { background: #e2e8f0; color: #1e293b; }
-
     /* ─── Footer ─── */
     footer { text-align: center; padding: 40px 24px; color: var(--text2); font-size: 13px; border-top: 1px solid var(--border); }
 
@@ -415,22 +384,22 @@
       <button class="filter-btn" data-filter="other">Other</button>
     </div>
     <div class="tools-grid" id="toolsGrid">
-      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-9082" target="_blank">CVE-2026-9082</a></h3><p>Drupal PostgreSQL SQLi — CISA KEV (May 2026)</p><div class="tool-meta"><span>Critical</span><span>Python</span><span>Mass Scanner</span></div></div>
-      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-0300-PANOS-RCE" target="_blank">CVE-2026-0300</a></h3><p>PAN-OS Captive Portal Buffer Overflow RCE</p><div class="tool-meta"><span>Critical</span><span>CISA KEV</span></div></div>
-      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-0073-ADBD-Bypass" target="_blank">CVE-2026-0073</a></h3><p>Android ADB Authentication Bypass</p><div class="tool-meta"><span>Critical</span><span>CISA KEV</span></div></div>
-      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-3854-GHE-RCE" target="_blank">CVE-2026-3854</a></h3><p>GitHub Enterprise Server RCE</p><div class="tool-meta"><span>Critical</span></div></div>
-      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-1731-BeyondTrust-RCE" target="_blank">CVE-2026-1731</a></h3><p>BeyondTrust Pre-auth RCE</p><div class="tool-meta"><span>Critical</span></div></div>
-      <div class="tool-card" data-cat="cve"><h3><span class="cve-high">●</span> <a href="https://github.com/ridhinva/CVE-2025-34291-Langflow-Scanner" target="_blank">CVE-2025-34291</a></h3><p>Langflow CORS Vulnerability Scanner</p><div class="tool-meta"><span>High</span></div></div>
-      <div class="tool-card" data-cat="web"><h3><a href="https://github.com/ridhinva/Web-Security-Toolkit" target="_blank">Web-Security-Toolkit</a></h3><p>8 scanners: SQLi, XSS, SSRF, SSTI, CMDi, IDOR, CSRF, JWT</p><div class="tool-meta"><span>8 tools</span><span>Python</span></div></div>
-      <div class="tool-card" data-cat="api"><h3><a href="https://github.com/ridhinva/API-Security-Toolkit" target="_blank">API-Security-Toolkit</a></h3><p>REST, GraphQL, WebSocket, gRPC vulnerability scanners</p><div class="tool-meta"><span>4 tools</span></div></div>
-      <div class="tool-card" data-cat="infra"><h3><a href="https://github.com/ridhinva/Infra-Security-Toolkit" target="_blank">Infra-Security-Toolkit</a></h3><p>Linux, Windows, AD, K8s, Docker, Cloud scanners</p><div class="tool-meta"><span>6 tools</span></div></div>
-      <div class="tool-card" data-cat="other"><h3><a href="https://github.com/ridhinva/Crypto-Attack-Toolkit" target="_blank">Crypto-Attack-Toolkit</a></h3><p>RSA, hash, lattice, symmetric cipher attack tools</p><div class="tool-meta"><span>4 tools</span></div></div>
-      <div class="tool-card" data-cat="exploit"><h3><a href="https://github.com/ridhinva/Exploit-Dev-Toolkit" target="_blank">Exploit-Dev-Toolkit</a></h3><p>Fuzzer, payload generator, ROP builder, shellcode encoder</p><div class="tool-meta"><span>4 tools</span></div></div>
-      <div class="tool-card" data-cat="exploit"><h3><a href="https://github.com/ridhinva/Reversing-Toolkit" target="_blank">Reversing-Toolkit</a></h3><p>Binary exploitation, heap attacks, VM reverse engineering</p><div class="tool-meta"><span>3 tools</span></div></div>
-      <div class="tool-card" data-cat="infra"><h3><a href="https://github.com/ridhinva/Cloud-Security-Toolkit" target="_blank">Cloud-Security-Toolkit</a></h3><p>AWS, Azure, GCP, Terraform/CloudFormation scanners</p><div class="tool-meta"><span>4 tools</span></div></div>
-      <div class="tool-card" data-cat="other"><h3><a href="https://github.com/ridhinva/Mobile-Security-Toolkit" target="_blank">Mobile-Security-Toolkit</a></h3><p>Android & iOS app security testing tools</p><div class="tool-meta"><span>2 tools</span></div></div>
-      <div class="tool-card" data-cat="other"><h3><a href="https://github.com/ridhinva/Wireless-Security-Toolkit" target="_blank">Wireless-Security-Toolkit</a></h3><p>WiFi, Bluetooth/BLE, RFID/NFC testing</p><div class="tool-meta"><span>3 tools</span></div></div>
-      <div class="tool-card" data-cat="other"><h3><a href="https://github.com/ridhinva/OSINT-Toolkit" target="_blank">OSINT-Toolkit</a></h3><p>Domain recon, email OSINT, social search, breach analysis</p><div class="tool-meta"><span>4 tools</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="CVE-2026-9082/">CVE-2026-9082</a></h3><p>Drupal PostgreSQL SQLi — CISA KEV (May 2026)</p><div class="tool-meta"><span>Critical</span><span>Python</span><span>Mass Scanner</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="CVE-2026-0300/">CVE-2026-0300</a></h3><p>PAN-OS Captive Portal Buffer Overflow RCE</p><div class="tool-meta"><span>Critical</span><span>CISA KEV</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="CVE-2026-0073/">CVE-2026-0073</a></h3><p>Android ADB Authentication Bypass</p><div class="tool-meta"><span>Critical</span><span>CISA KEV</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="CVE-2026-3854/">CVE-2026-3854</a></h3><p>GitHub Enterprise Server RCE</p><div class="tool-meta"><span>Critical</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="CVE-2026-1731/">CVE-2026-1731</a></h3><p>BeyondTrust Pre-auth RCE</p><div class="tool-meta"><span>Critical</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><span class="cve-high">●</span> <a href="CVE-2025-34291/">CVE-2025-34291</a></h3><p>Langflow CORS Vulnerability Scanner</p><div class="tool-meta"><span>High</span></div></div>
+      <div class="tool-card" data-cat="web"><h3><a href="Web-Security-Toolkit/">Web-Security-Toolkit</a></h3><p>8 scanners: SQLi, XSS, SSRF, SSTI, CMDi, IDOR, CSRF, JWT</p><div class="tool-meta"><span>8 tools</span><span>Python</span></div></div>
+      <div class="tool-card" data-cat="api"><h3><a href="API-Security-Toolkit/">API-Security-Toolkit</a></h3><p>REST, GraphQL, WebSocket, gRPC vulnerability scanners</p><div class="tool-meta"><span>4 tools</span></div></div>
+      <div class="tool-card" data-cat="infra"><h3><a href="Infra-Security-Toolkit/">Infra-Security-Toolkit</a></h3><p>Linux, Windows, AD, K8s, Docker, Cloud scanners</p><div class="tool-meta"><span>6 tools</span></div></div>
+      <div class="tool-card" data-cat="other"><h3><a href="Crypto-Attack-Toolkit/">Crypto-Attack-Toolkit</a></h3><p>RSA, hash, lattice, symmetric cipher attack tools</p><div class="tool-meta"><span>4 tools</span></div></div>
+      <div class="tool-card" data-cat="exploit"><h3><a href="Exploit-Dev-Toolkit/">Exploit-Dev-Toolkit</a></h3><p>Fuzzer, payload generator, ROP builder, shellcode encoder</p><div class="tool-meta"><span>4 tools</span></div></div>
+      <div class="tool-card" data-cat="exploit"><h3><a href="Reversing-Toolkit/">Reversing-Toolkit</a></h3><p>Binary exploitation, heap attacks, VM reverse engineering</p><div class="tool-meta"><span>3 tools</span></div></div>
+      <div class="tool-card" data-cat="infra"><h3><a href="Cloud-Security-Toolkit/">Cloud-Security-Toolkit</a></h3><p>AWS, Azure, GCP, Terraform/CloudFormation scanners</p><div class="tool-meta"><span>4 tools</span></div></div>
+      <div class="tool-card" data-cat="other"><h3><a href="Mobile-Security-Toolkit/">Mobile-Security-Toolkit</a></h3><p>Android & iOS app security testing tools</p><div class="tool-meta"><span>2 tools</span></div></div>
+      <div class="tool-card" data-cat="other"><h3><a href="Wireless-Security-Toolkit/">Wireless-Security-Toolkit</a></h3><p>WiFi, Bluetooth/BLE, RFID/NFC testing</p><div class="tool-meta"><span>3 tools</span></div></div>
+      <div class="tool-card" data-cat="other"><h3><a href="OSINT-Toolkit/">OSINT-Toolkit</a></h3><p>Domain recon, email OSINT, social search, breach analysis</p><div class="tool-meta"><span>4 tools</span></div></div>
     </div>
   </section>
 
@@ -460,14 +429,6 @@
   </section>
 
   <footer>© 2026 Ridhin V A. Built with care.</footer>
-
-  <!-- README Modal -->
-  <div class="modal-overlay" id="readmeModal">
-    <div class="modal-box" id="readmeContent">
-      <button class="modal-close" id="closeModal">✕</button>
-      <div style="text-align:center;padding:30px;color:#94a3b8;">Loading README...</div>
-    </div>
-  </div>
 
   <script>
     // Theme toggle
@@ -509,46 +470,7 @@
     // Fade-in
     new IntersectionObserver((entries) => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-    }, { threshold: 0.1 }).observe(document.querySelector('.fade-in')); // placeholder
-
-    // README Modal
-    const modal = document.getElementById('readmeModal');
-    const closeBtn = document.getElementById('closeModal');
-    closeBtn.addEventListener('click', () => modal.classList.remove('open'));
-    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
-
-    document.querySelectorAll('#toolsGrid .tool-card h3 a').forEach(link => {
-      link.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const m = link.href.match(/github\.com\/([^\/]+\/[^\/]+?)(?:\/|$)/);
-        if (!m) return;
-        modal.classList.add('open');
-        document.getElementById('readmeContent').innerHTML = '<button class="modal-close" id="closeModal2">✕</button><div style="text-align:center;padding:30px;color:#94a3b8;">Loading README...</div>';
-        document.getElementById('closeModal2').addEventListener('click', () => modal.classList.remove('open'));
-        try {
-          const r = await fetch(`https://api.github.com/repos/${m[1]}/readme`, { headers: { 'Accept': 'application/vnd.github.v3.raw' } });
-          if (!r.ok) throw Error();
-          let md = await r.text();
-          let html = md
-            .replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[c])
-            .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-            .replace(/`([^`]+)`/g, '<code>$1</code>')
-            .replace(/###### (.*)/g, '<h6>$1</h6>')
-            .replace(/##### (.*)/g, '<h5>$1</h5>')
-            .replace(/#### (.*)/g, '<h4>$1</h4>')
-            .replace(/### (.*)/g, '<h3>$1</h3>')
-            .replace(/## (.*)/g, '<h2>$1</h2>')
-            .replace(/# (.*)/g, '<h1>$1</h1>')
-            .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
-            .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*([^*]+)\*/g, '<em>$1</em>')
-            .replace(/^- (.*)/gm, '<li>$1</li>')
-            .replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
-          document.getElementById('readmeContent').innerHTML = '<button class="modal-close" id="closeModal2">✕</button>' + html;
-          document.getElementById('closeModal2').addEventListener('click', () => modal.classList.remove('open'));
-        } catch { location.href = link.href; }
-      });
-    });
+    }).observe(document.querySelector('.fade-in'));
   </script>
 </body>
 </html>
