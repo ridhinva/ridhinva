@@ -18,8 +18,6 @@ Bug bounty hunter targeting web apps, APIs, and cloud infrastructure.
 I find vulnerabilities, write exploit tools, and share them with the community.
 
 - 🔴 **HackerOne:** `realridhinofficia`
-- 🎯 **Targets:** 1win, 23andMe, Whatnot, Alsco, raja8899, Privy BBP, McGraw Hill VDP
-- 🧠 **HTB CTF:** hardware, modbus, casino, satellite — active PCB Gerber challenge
 - 🐍 **Stack:** Python, Bash, JavaScript, SQL
 - 🛠️ **Tools:** Burp Suite, Nmap, Metasploit, 100+ security skills
 
@@ -79,10 +77,4 @@ CTF / Reverse Eng      █████████████████░░
 
 ---
 
-<div align="center">
 
-```
-[ STATUS: ACTIVE  •  Hunting: $1win $23andMe $Whatnot $Alsco ]
-```
-
-</div>
