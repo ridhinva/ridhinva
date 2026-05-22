@@ -11,6 +11,16 @@
       --dark: #0a0a0a;
       --dim: #003300;
       --gray: #005500;
+      --bg-card: rgba(0,20,0,0.3);
+      --text-muted: #008800;
+    }
+    body.light {
+      --neon: #006600;
+      --dark: #f0faf0;
+      --dim: #c0e0c0;
+      --gray: #409040;
+      --bg-card: rgba(0,100,0,0.05);
+      --text-muted: #208020;
     }
     html { scroll-behavior: smooth; }
     body {
@@ -245,11 +255,70 @@
       border: 1px solid var(--dim);
       padding: 3px 10px; font-size: 10px;
       letter-spacing: 1px; transition: all 0.3s;
+      color: var(--neon);
     }
     .skill-tags span:hover {
       border-color: var(--neon);
       background: rgba(0,255,65,0.12);
       transform: translateY(-2px);
+    }
+
+    /* ─── Theme Toggle ─── */
+    .theme-toggle {
+      position: fixed; top: 14px; right: 20px;
+      z-index: 101;
+      background: var(--dark);
+      border: 1px solid var(--dim);
+      color: var(--neon);
+      padding: 6px 14px; font-size: 16px;
+      cursor: pointer; font-family: monospace;
+      transition: all 0.3s;
+    }
+    .theme-toggle:hover {
+      border-color: var(--neon);
+      box-shadow: 0 0 15px rgba(0,255,65,0.2);
+    }
+    @media (max-width: 768px) { .theme-toggle { right: 10px; padding: 4px 10px; font-size: 14px; } }
+
+    /* ─── Achievement Timeline ─── */
+    .timeline { position: relative; margin: 30px 0; padding-left: 30px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 8px; top: 0;
+      width: 2px; height: 100%; background: var(--dim);
+    }
+    .timeline-item {
+      position: relative; margin-bottom: 25px; padding-left: 20px;
+    }
+    .timeline-item::before {
+      content: '◆'; position: absolute; left: -25px;
+      color: var(--neon); font-size: 10px;
+    }
+    .timeline-item .date { font-size: 10px; color: var(--gray); }
+    .timeline-item .desc { font-size: 13px; margin-top: 3px; }
+
+    /* ─── Tool Filters ─── */
+    .filter-bar {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .filter-btn {
+      background: transparent; border: 1px solid var(--dim);
+      color: var(--gray); padding: 6px 14px; font-size: 11px;
+      cursor: pointer; font-family: monospace; letter-spacing: 1px;
+      transition: all 0.3s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--neon); color: var(--neon);
+    }
+    .filter-btn.active { background: rgba(0,255,65,0.1); }
+
+    /* ─── Gallery / Tool Icons ─── */
+    .tool-icon { font-size: 24px; margin-bottom: 6px; display: block; }
+
+    /* Light theme adjustments */
+    body.light .scanlines { opacity: 0.3; }
+    body.light .stat-card, body.light .skill-group,
+    body.light .repo-card, body.light .contact-card {
+      background: var(--bg-card);
     }
 
     /* ─── Repos ─── */
@@ -373,11 +442,14 @@
   <!-- Floating particles -->
   <div id="floatContainer"></div>
 
+  <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
+
   <nav>
     <a href="#home">~Home</a>
     <a href="#about">About</a>
     <a href="#skills">Skills</a>
-    <a href="#repos">Repos</a>
+    <a href="#tools">Tools</a>
+    <a href="#timeline">Timeline</a>
     <a href="#contact">Contact</a>
   </nav>
 
@@ -458,21 +530,54 @@
     </div>
   </section>
 
-  <section id="repos">
+  <section id="tools">
     <h2 class="section-title"><span>//</span> EXPLOIT_TOOLS</h2>
-    <p style="font-size:12px;color:var(--gray);margin-bottom:20px;">Open-source tools with full install, usage, and methodology docs on GitHub.</p>
-    <div class="repos-grid">
-      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Web-Security-Toolkit" target="_blank">Web-Security-Toolkit</a></h3><p>8 vuln scanners — SQLi, XSS, SSRF, SSTI, CMDi, IDOR, CSRF, JWT</p><div class="repo-meta"><span>⭐ 8 tools</span><span>🐍 Python</span></div></div>
-      <div class="repo-card"><h3><a href="https://github.com/ridhinva/API-Security-Toolkit" target="_blank">API-Security-Toolkit</a></h3><p>REST, GraphQL, WebSocket, gRPC vulnerability scanners</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
-      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Infra-Security-Toolkit" target="_blank">Infra-Security-Toolkit</a></h3><p>Linux, Windows, AD, K8s, Docker, Cloud scanners</p><div class="repo-meta"><span>⭐ 6 tools</span></div></div>
-      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Crypto-Attack-Toolkit" target="_blank">Crypto-Attack-Toolkit</a></h3><p>RSA, hash, lattice, symmetric cipher attack tools</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
-      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Exploit-Dev-Toolkit" target="_blank">Exploit-Dev-Toolkit</a></h3><p>Fuzzer, payload generator, ROP builder, shellcode encoder</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
-      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Reversing-Toolkit" target="_blank">Reversing-Toolkit</a></h3><p>Binary exploitation, heap attacks, VM reverse engineering</p><div class="repo-meta"><span>⭐ 3 tools</span></div></div>
-      <div class="repo-card"><h3><a href="https://github.com/ridhinva/OSINT-Toolkit" target="_blank">OSINT-Toolkit</a></h3><p>Domain recon, email OSINT, social search, breach analysis</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
-      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Cloud-Security-Toolkit" target="_blank">Cloud-Security-Toolkit</a></h3><p>AWS, Azure, GCP, IaC security scanners</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
-      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Mobile-Security-Toolkit" target="_blank">Mobile-Security-Toolkit</a></h3><p>Android & iOS app security testing</p><div class="repo-meta"><span>⭐ 2 tools</span></div></div>
-      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Wireless-Security-Toolkit" target="_blank">Wireless-Security-Toolkit</a></h3><p>WiFi, Bluetooth/BLE, RFID/NFC security testing</p><div class="repo-meta"><span>⭐ 3 tools</span></div></div>
-      <div class="repo-card"><h3><span class="severity-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-9082" target="_blank">CVE-2026-9082</a></h3><p>Drupal PostgreSQL SQLi — CISA KEV May 22</p><div class="repo-meta"><span>🔴 CRITICAL</span></div></div>
+    <p style="font-size:12px;color:var(--gray);margin-bottom:15px;">15+ open-source security tools — click any to view on GitHub with full install & usage docs.</p>
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" data-filter="all">ALL</button>
+      <button class="filter-btn" data-filter="cve">🔴 CVE</button>
+      <button class="filter-btn" data-filter="web">🌐 Web</button>
+      <button class="filter-btn" data-filter="api">🔌 API</button>
+      <button class="filter-btn" data-filter="infra">🖥️ Infra</button>
+      <button class="filter-btn" data-filter="crypto">🔐 Crypto</button>
+      <button class="filter-btn" data-filter="exploit">💥 Exploit</button>
+      <button class="filter-btn" data-filter="mobile">📱 Mobile</button>
+      <button class="filter-btn" data-filter="wireless">📡 Wireless</button>
+      <button class="filter-btn" data-filter="osint">🕵️ OSINT</button>
+    </div>
+    <div class="repos-grid" id="toolsGrid">
+      <div class="repo-card" data-cat="cve"><h3><span class="severity-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-9082" target="_blank">CVE-2026-9082</a></h3><span class="tool-icon">🐘</span><p>Drupal PostgreSQL SQLi — CISA KEV #1</p><div class="repo-meta"><span>🔴 CRITICAL</span><span>🐍 Python</span><span>Mass scanner</span></div></div>
+      <div class="repo-card" data-cat="cve"><h3><span class="severity-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-0300-PANOS-RCE" target="_blank">CVE-2026-0300</a></h3><span class="tool-icon">🛡️</span><p>PAN-OS Captive Portal BOF RCE (root)</p><div class="repo-meta"><span>🔴 CRITICAL</span><span>CISA KEV</span></div></div>
+      <div class="repo-card" data-cat="cve"><h3><span class="severity-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-0073-ADBD-Bypass" target="_blank">CVE-2026-0073</a></h3><span class="tool-icon">📱</span><p>Android ADB Authentication Bypass</p><div class="repo-meta"><span>🔴 CRITICAL</span><span>CISA KEV</span></div></div>
+      <div class="repo-card" data-cat="cve"><h3><span class="severity-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-3854-GHE-RCE" target="_blank">CVE-2026-3854</a></h3><span class="tool-icon">🐙</span><p>GitHub Enterprise Server RCE</p><div class="repo-meta"><span>🔴 CRITICAL</span></div></div>
+      <div class="repo-card" data-cat="cve"><h3><span class="severity-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-1731-BeyondTrust-RCE" target="_blank">CVE-2026-1731</a></h3><span class="tool-icon">🔗</span><p>BeyondTrust Pre-auth RCE</p><div class="repo-meta"><span>🔴 CRITICAL</span></div></div>
+      <div class="repo-card" data-cat="cve"><h3><span class="severity-critical">●</span> <a href="https://github.com/ridhinva/CVE-2025-34291-Langflow-Scanner" target="_blank">CVE-2025-34291</a></h3><span class="tool-icon">🔀</span><p>Langflow CORS Vulnerability</p><div class="repo-meta"><span>🟠 HIGH</span></div></div>
+      <div class="repo-card" data-cat="web"><h3><a href="https://github.com/ridhinva/Web-Security-Toolkit" target="_blank">Web-Security-Toolkit</a></h3><span class="tool-icon">🌐</span><p>8 scanners: SQLi, XSS, SSRF, SSTI, CMDi, IDOR, CSRF, JWT</p><div class="repo-meta"><span>⭐ 8 tools</span><span>🐍 Python</span></div></div>
+      <div class="repo-card" data-cat="api"><h3><a href="https://github.com/ridhinva/API-Security-Toolkit" target="_blank">API-Security-Toolkit</a></h3><span class="tool-icon">🔌</span><p>REST, GraphQL, WebSocket, gRPC scanners</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
+      <div class="repo-card" data-cat="infra"><h3><a href="https://github.com/ridhinva/Infra-Security-Toolkit" target="_blank">Infra-Security-Toolkit</a></h3><span class="tool-icon">🖥️</span><p>Linux, Windows, AD, K8s, Docker, Cloud</p><div class="repo-meta"><span>⭐ 6 tools</span></div></div>
+      <div class="repo-card" data-cat="crypto"><h3><a href="https://github.com/ridhinva/Crypto-Attack-Toolkit" target="_blank">Crypto-Attack-Toolkit</a></h3><span class="tool-icon">🔐</span><p>RSA, hash, lattice, symmetric attacks</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
+      <div class="repo-card" data-cat="exploit"><h3><a href="https://github.com/ridhinva/Exploit-Dev-Toolkit" target="_blank">Exploit-Dev-Toolkit</a></h3><span class="tool-icon">💥</span><p>Fuzzer, payloads, ROP, shellcode encoder</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
+      <div class="repo-card" data-cat="exploit"><h3><a href="https://github.com/ridhinva/Reversing-Toolkit" target="_blank">Reversing-Toolkit</a></h3><span class="tool-icon">🔧</span><p>Bin exploit, heap attacks, VM reversing</p><div class="repo-meta"><span>⭐ 3 tools</span></div></div>
+      <div class="repo-card" data-cat="mobile"><h3><a href="https://github.com/ridhinva/Mobile-Security-Toolkit" target="_blank">Mobile-Security-Toolkit</a></h3><span class="tool-icon">📱</span><p>Android & iOS app security testing</p><div class="repo-meta"><span>⭐ 2 tools</span></div></div>
+      <div class="repo-card" data-cat="wireless"><h3><a href="https://github.com/ridhinva/Wireless-Security-Toolkit" target="_blank">Wireless-Security-Toolkit</a></h3><span class="tool-icon">📡</span><p>WiFi, Bluetooth/BLE, RFID/NFC</p><div class="repo-meta"><span>⭐ 3 tools</span></div></div>
+      <div class="repo-card" data-cat="osint"><h3><a href="https://github.com/ridhinva/OSINT-Toolkit" target="_blank">OSINT-Toolkit</a></h3><span class="tool-icon">🕵️</span><p>Domain recon, email OSINT, breach check</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
+      <div class="repo-card" data-cat="infra"><h3><a href="https://github.com/ridhinva/Cloud-Security-Toolkit" target="_blank">Cloud-Security-Toolkit</a></h3><span class="tool-icon">☁️</span><p>AWS, Azure, GCP, IaC scanners</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
+    </div>
+  </section>
+
+  <section id="timeline">
+    <h2 class="section-title"><span>//</span> ACHIEVEMENTS</h2>
+    <div class="timeline">
+      <div class="timeline-item"><div class="date">2026-05-22</div><div class="desc"><strong>CISA KEV</strong> — CVE-2026-9082 Drupal SQLi added to known exploited vulns catalog</div></div>
+      <div class="timeline-item"><div class="date">2026-05-22</div><div class="desc"><strong>TwitterScraper</strong> — Released tool to search tweets without API keys</div></div>
+      <div class="timeline-item"><div class="date">2026-05-22</div><div class="desc"><strong>15+ Exploit Tools</strong> — Released 5 skill toolkit repos (Web, API, Infra, Crypto, Exploit, Reversing, Cloud, OSINT, Mobile, Wireless)</div></div>
+      <div class="timeline-item"><div class="date">2026-05-21</div><div class="desc"><strong>CVE Scanners</strong> — Released scanners for PAN-OS, ADBD, GHE, BeyondTrust, Langflow</div></div>
+      <div class="timeline-item"><div class="date">2026-05-20</div><div class="desc"><strong>ds4 PR</strong> — Submitted SSE keepalive fix to antirez/ds4 (#222 wall-clock timer)</div></div>
+      <div class="timeline-item"><div class="date">2026-05-04</div><div class="desc"><strong>CISA KEV</strong> — CVE-2026-0073 Android ADBD auth bypass added</div></div>
+      <div class="timeline-item"><div class="date">2026-03-10</div><div class="desc"><strong>CISA KEV</strong> — CVE-2026-3854 GitHub Enterprise Server RCE added</div></div>
+      <div class="timeline-item"><div class="date">2026-02-06</div><div class="desc"><strong>CISA KEV</strong> — CVE-2026-1731 BeyondTrust pre-auth RCE added</div></div>
+      <div class="timeline-item"><div class="date">2026</div><div class="desc"><strong>HTB CTF</strong> — Solved hardware TPM, Modbus, Casino, Satellite challenges</div></div>
+      <div class="timeline-item"><div class="date">2026</div><div class="desc"><strong>Hak5</strong> — Submitted MFA Fatigue + Telegram Exfil USB Rubber Ducky payloads</div></div>
     </div>
   </section>
 
@@ -639,7 +744,35 @@
     }, { threshold: 0.1 });
     document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
 
-    // ─── 3D Tilt on cards ───
+    // ─── Theme Toggle ───
+    const themeBtn = document.getElementById('themeToggle');
+    themeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      themeBtn.textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
+      localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light');
+      themeBtn.textContent = '☀️';
+    }
+
+    // ─── Tool Category Filter ───
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const toolCards = document.querySelectorAll('#toolsGrid .repo-card');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        toolCards.forEach(card => {
+          if (filter === 'all' || card.dataset.cat === filter) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
     document.querySelectorAll('[data-tilt], .repo-card, .contact-card, .skill-group').forEach(card => {
       card.addEventListener('mousemove', e => {
         const rect = card.getBoundingClientRect();
