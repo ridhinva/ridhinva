@@ -3,478 +3,315 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ridhin V A | Bug Bounty Hunter</title>
+  <title>Ridhin V A | Security Researcher</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --neon: #00ff41;
-      --dark: #0a0a0a;
-      --dim: #003300;
-      --gray: #005500;
-      --bg-card: rgba(0,20,0,0.3);
-      --text-muted: #008800;
+      --bg: #f8fafc;
+      --bg2: #ffffff;
+      --text: #1e293b;
+      --text2: #64748b;
+      --border: #e2e8f0;
+      --accent: #2563eb;
+      --accent2: #3b82f6;
+      --accent-light: #dbeafe;
+      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.08);
+      --radius: 12px;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --mono: 'JetBrains Mono', 'Fira Code', monospace;
     }
-    body.light {
-      --neon: #006600;
-      --dark: #f0faf0;
-      --dim: #c0e0c0;
-      --gray: #409040;
-      --bg-card: rgba(0,100,0,0.05);
-      --text-muted: #208020;
+    body.dark {
+      --bg: #0f172a;
+      --bg2: #1e293b;
+      --text: #f1f5f9;
+      --text2: #94a3b8;
+      --border: #334155;
+      --accent: #3b82f6;
+      --accent-light: #1e3a5f;
+      --shadow: 0 1px 3px rgba(0,0,0,0.2);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.3);
     }
     html { scroll-behavior: smooth; }
     body {
-      font-family: 'Courier New', monospace;
-      background: var(--dark);
-      color: var(--neon);
-      overflow-x: hidden;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
       line-height: 1.6;
-      perspective: 1200px;
     }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--dark); }
-    ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 3px; }
-    ::selection { background: var(--neon); color: var(--dark); }
+    ::selection { background: var(--accent); color: #fff; }
 
-    /* 3D Particle Canvas */
-    canvas#particle3d {
-      position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: -1;
+    /* ─── Theme Toggle ─── */
+    .theme-toggle {
+      position: fixed; top: 16px; right: 24px; z-index: 100;
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--text); padding: 8px 14px; font-size: 16px;
+      cursor: pointer; border-radius: 8px;
+      transition: all 0.2s; box-shadow: var(--shadow);
     }
+    .theme-toggle:hover { border-color: var(--accent); }
 
+    /* ─── Nav ─── */
     nav {
-      position: fixed; top: 0; width: 100%;
-      background: rgba(10,10,10,0.85);
-      padding: 15px 20px;
-      display: flex; justify-content: center; gap: 25px;
-      z-index: 100;
-      border-bottom: 1px solid var(--dim);
-      backdrop-filter: blur(12px);
-      transform-style: preserve-3d;
+      position: fixed; top: 0; width: 100%; z-index: 99;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+      padding: 0 24px; display: flex; justify-content: center; gap: 4px;
     }
+    body.dark nav { background: rgba(15,23,42,0.85); }
     nav a {
-      color: var(--neon); text-decoration: none; font-size: 12px;
-      letter-spacing: 2px; text-transform: uppercase;
-      transition: all 0.3s; position: relative;
+      color: var(--text2); text-decoration: none;
+      padding: 14px 18px; font-size: 13px; font-weight: 500;
+      transition: color 0.2s; position: relative;
     }
+    nav a:hover { color: var(--accent); }
     nav a::after {
-      content: ''; position: absolute; bottom: -4px; left: 0;
-      width: 0; height: 1px; background: var(--neon);
-      transition: width 0.3s;
+      content: ''; position: absolute; bottom: 0; left: 50%;
+      width: 0; height: 2px; background: var(--accent);
+      transition: all 0.2s; transform: translateX(-50%);
+      border-radius: 2px;
     }
-    nav a:hover::after { width: 100%; }
-    nav a:hover { color: #fff; text-shadow: 0 0 15px var(--neon); transform: translateZ(20px); }
+    nav a:hover::after { width: 60%; }
 
     section {
-      position: relative; z-index: 1;
-      min-height: 100vh; padding: 100px 20px 60px;
-      max-width: 1000px; margin: auto;
-      transform-style: preserve-3d;
+      max-width: 1000px; margin: auto; padding: 100px 24px 60px;
     }
 
     /* ─── Hero ─── */
     #home {
-      display: flex; flex-direction: column;
-      justify-content: center; min-height: 100vh;
-      align-items: center; text-align: center;
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; max-width: 700px;
     }
-    .hero-badge {
-      display: inline-block;
-      border: 1px solid var(--neon);
-      padding: 5px 16px; font-size: 11px;
-      letter-spacing: 4px; margin-bottom: 25px;
-      opacity: 0.7;
-      animation: badgePulse 3s ease-in-out infinite;
+    #home .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--accent-light); color: var(--accent);
+      padding: 4px 14px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; margin-bottom: 20px;
+      width: fit-content;
     }
-    @keyframes badgePulse {
-      0%,100% { opacity: 0.7; box-shadow: 0 0 0 transparent; }
-      50% { opacity: 1; box-shadow: 0 0 20px rgba(0,255,65,0.3); }
+    #home h1 {
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 800; letter-spacing: -1px;
+      line-height: 1.1; margin-bottom: 6px;
     }
-    h1 {
-      font-size: clamp(42px, 7vw, 72px);
-      color: var(--neon);
-      text-shadow: 0 0 40px var(--neon);
-      margin-bottom: 8px;
-      animation: titleGlow 3s ease-in-out infinite alternate;
+    #home .sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--text2); margin-bottom: 20px;
+      line-height: 1.5;
     }
-    @keyframes titleGlow {
-      0% { text-shadow: 0 0 20px var(--neon), 0 0 40px rgba(0,255,65,0.3); }
-      100% { text-shadow: 0 0 40px var(--neon), 0 0 80px rgba(0,255,65,0.5), 0 0 120px rgba(0,255,65,0.2); }
-    }
-
-    .typewriter {
-      font-size: clamp(14px, 2vw, 20px);
-      color: var(--neon); opacity: 0.85;
-      min-height: 1.5em;
-      margin-bottom: 8px;
-    }
-    .typewriter .cursor {
-      animation: blink 0.7s step-end infinite;
-    }
-    @keyframes blink { 50% { opacity: 0; } }
-
+    #home .sub strong { color: var(--accent); font-weight: 600; }
     .hero-links {
-      display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 20px;
+      display: flex; gap: 10px; flex-wrap: wrap;
     }
     .hero-links a {
-      color: var(--neon); text-decoration: none;
-      border: 1px solid var(--dim); padding: 10px 22px;
-      font-size: 12px; letter-spacing: 1px;
-      transition: all 0.4s; position: relative;
-      overflow: hidden;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 22px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; text-decoration: none;
+      transition: all 0.2s;
     }
-    .hero-links a::before {
-      content: ''; position: absolute; top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(0,255,65,0.1), transparent);
-      transition: left 0.5s;
+    .hero-links .primary {
+      background: var(--accent); color: #fff;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.3);
     }
-    .hero-links a:hover::before { left: 100%; }
-    .hero-links a:hover {
-      border-color: var(--neon);
-      box-shadow: 0 0 25px rgba(0,255,65,0.3), inset 0 0 25px rgba(0,255,65,0.05);
-      transform: translateY(-3px) scale(1.03);
+    .hero-links .primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,99,235,0.4); }
+    .hero-links .secondary {
+      background: var(--bg2); color: var(--text);
+      border: 1px solid var(--border);
     }
+    .hero-links .secondary:hover { border-color: var(--accent); }
 
-    /* ─── Section Title ─── */
-    .section-title {
-      font-size: 14px; letter-spacing: 4px;
-      color: var(--gray); margin-bottom: 30px;
-      padding-bottom: 12px;
-      position: relative;
+    .hero-stats {
+      display: flex; gap: 30px; margin-top: 35px; flex-wrap: wrap;
     }
-    .section-title::after {
-      content: ''; position: absolute; bottom: 0; left: 0;
-      width: 60px; height: 1px; background: var(--neon);
-      animation: titleLine 2s ease-out forwards;
+    .hero-stats .stat { text-align: center; }
+    .hero-stats .num {
+      font-size: 28px; font-weight: 800; color: var(--accent);
+      font-family: var(--mono);
     }
-    @keyframes titleLine {
-      0% { width: 0; }
-      100% { width: 60px; }
+    .hero-stats .lbl { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+    /* ─── Section Titles ─── */
+    .sec-title {
+      font-size: 28px; font-weight: 800; margin-bottom: 6px;
+      letter-spacing: -0.5px;
     }
-    .section-title span { color: var(--neon); }
+    .sec-sub {
+      color: var(--text2); font-size: 15px; margin-bottom: 35px;
+    }
 
     /* ─── About ─── */
     .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 35px; margin-top: 20px;
+      display: grid; grid-template-columns: 1.2fr 1fr;
+      gap: 40px; align-items: start;
     }
     @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; } }
-    .about-text { font-size: 14px; line-height: 1.9; opacity: 0.85; }
-    .about-text .hl { color: var(--neon); opacity: 1; font-weight: bold; }
-    .about-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
-    .stat-card {
-      border: 1px solid var(--dim);
-      padding: 24px; text-align: center;
-      transition: all 0.5s;
-      transform-style: preserve-3d;
-      cursor: default;
-    }
-    .stat-card:hover {
-      border-color: var(--neon);
-      box-shadow: 0 0 30px rgba(0,255,65,0.2), 0 15px 40px rgba(0,0,0,0.5);
-      transform: translateZ(30px) rotateX(-2deg) rotateY(2deg);
-    }
-    .stat-num { font-size: 36px; font-weight: bold; }
-    .stat-lbl { font-size: 10px; color: var(--gray); letter-spacing: 2px; margin-top: 6px; }
+    .about-text { font-size: 15px; color: var(--text2); line-height: 1.8; }
+    .about-text strong { color: var(--text); font-weight: 600; }
 
     /* ─── Skills ─── */
     .skills-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px; margin-top: 20px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
     }
     @media (max-width: 768px) { .skills-grid { grid-template-columns: 1fr; } }
     .skill-group {
-      border: 1px solid var(--dim);
-      padding: 22px; transition: all 0.5s;
-      transform-style: preserve-3d;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+      transition: box-shadow 0.2s;
     }
-    .skill-group:hover {
-      border-color: var(--neon);
-      box-shadow: 0 0 30px rgba(0,255,65,0.15);
-      transform: translateZ(20px) rotateX(-1deg);
-    }
+    .skill-group:hover { box-shadow: var(--shadow-lg); }
     .skill-group h3 {
-      font-size: 11px; letter-spacing: 2px;
-      color: var(--gray); margin-bottom: 15px;
+      font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--accent); margin-bottom: 16px; font-weight: 700;
     }
-    .skill-item { margin-bottom: 12px; }
+    .skill-item { margin-bottom: 10px; }
     .skill-item .name {
       display: flex; justify-content: space-between;
-      font-size: 12px; margin-bottom: 5px;
+      font-size: 13px; margin-bottom: 4px;
     }
+    .skill-item .pct { color: var(--text2); font-family: var(--mono); font-size: 12px; }
     .skill-item .bar {
-      height: 5px; background: rgba(0,255,65,0.08);
-      border-radius: 3px; overflow: hidden;
+      height: 4px; background: var(--border); border-radius: 4px; overflow: hidden;
     }
     .skill-item .fill {
-      height: 100%; background: linear-gradient(90deg, var(--neon), #66ff99);
-      border-radius: 3px; width: 0;
-      transition: width 1.8s cubic-bezier(0.22, 1, 0.36, 1);
-      box-shadow: 0 0 6px var(--neon);
+      height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 4px; width: 0;
+      transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .skill-group:hover .fill { box-shadow: 0 0 12px var(--neon); }
-    .skill-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
     .skill-tags span {
-      background: rgba(0,255,65,0.06);
-      border: 1px solid var(--dim);
-      padding: 3px 10px; font-size: 10px;
-      letter-spacing: 1px; transition: all 0.3s;
-      color: var(--neon);
-    }
-    .skill-tags span:hover {
-      border-color: var(--neon);
-      background: rgba(0,255,65,0.12);
-      transform: translateY(-2px);
+      background: var(--bg); color: var(--text2);
+      padding: 3px 10px; border-radius: 6px;
+      font-size: 11px; font-weight: 500;
     }
 
-    /* ─── Theme Toggle ─── */
-    .theme-toggle {
-      position: fixed; top: 14px; right: 20px;
-      z-index: 101;
-      background: var(--dark);
-      border: 1px solid var(--dim);
-      color: var(--neon);
-      padding: 6px 14px; font-size: 16px;
-      cursor: pointer; font-family: monospace;
-      transition: all 0.3s;
-    }
-    .theme-toggle:hover {
-      border-color: var(--neon);
-      box-shadow: 0 0 15px rgba(0,255,65,0.2);
-    }
-    @media (max-width: 768px) { .theme-toggle { right: 10px; padding: 4px 10px; font-size: 14px; } }
-
-    /* ─── Achievement Timeline ─── */
-    .timeline { position: relative; margin: 30px 0; padding-left: 30px; }
-    .timeline::before {
-      content: ''; position: absolute; left: 8px; top: 0;
-      width: 2px; height: 100%; background: var(--dim);
-    }
-    .timeline-item {
-      position: relative; margin-bottom: 25px; padding-left: 20px;
-    }
-    .timeline-item::before {
-      content: '◆'; position: absolute; left: -25px;
-      color: var(--neon); font-size: 10px;
-    }
-    .timeline-item .date { font-size: 10px; color: var(--gray); }
-    .timeline-item .desc { font-size: 13px; margin-top: 3px; }
-
-    /* ─── Tool Filters ─── */
+    /* ─── Tools Grid ─── */
     .filter-bar {
-      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
+      display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 24px;
     }
     .filter-btn {
-      background: transparent; border: 1px solid var(--dim);
-      color: var(--gray); padding: 6px 14px; font-size: 11px;
-      cursor: pointer; font-family: monospace; letter-spacing: 1px;
-      transition: all 0.3s;
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--text2); padding: 6px 16px; border-radius: 8px;
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      font-family: var(--font); transition: all 0.2s;
     }
     .filter-btn:hover, .filter-btn.active {
-      border-color: var(--neon); color: var(--neon);
+      border-color: var(--accent); color: var(--accent);
+      background: var(--accent-light);
     }
-    .filter-btn.active { background: rgba(0,255,65,0.1); }
+    .tools-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .tool-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      cursor: pointer; transition: all 0.25s;
+    }
+    .tool-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-3px);
+      border-color: var(--accent);
+    }
+    .tool-card h3 {
+      font-size: 14px; font-weight: 700; margin-bottom: 4px;
+    }
+    .tool-card h3 a { color: var(--text); text-decoration: none; }
+    .tool-card h3 a:hover { color: var(--accent); }
+    .tool-card p { font-size: 12px; color: var(--text2); }
+    .tool-meta { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .tool-meta span {
+      font-size: 11px; color: var(--text2);
+      background: var(--bg); padding: 2px 10px; border-radius: 6px;
+    }
+    .cve-critical { color: #dc2626; font-weight: 600; }
+    .cve-high { color: #ea580c; font-weight: 600; }
 
-    /* ─── Gallery / Tool Icons ─── */
-    .tool-icon { font-size: 24px; margin-bottom: 6px; display: block; }
-
-    /* Light theme adjustments */
-    body.light .scanlines { opacity: 0.3; }
-    body.light .stat-card, body.light .skill-group,
-    body.light .repo-card, body.light .contact-card {
-      background: var(--bg-card);
+    /* ─── Timeline ─── */
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 7px; top: 0;
+      width: 2px; height: 100%; background: var(--border);
     }
-
-    /* ─── README Modal ─── */
-    .readme-modal {
-      display: none;
-      position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 9999;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(8px);
-      justify-content: center; align-items: center;
-      padding: 40px;
+    .timeline-item {
+      position: relative; margin-bottom: 28px; padding-left: 20px;
     }
-    .readme-modal.open { display: flex; }
-    .readme-modal .modal-content {
-      background: var(--dark);
-      border: 1px solid var(--dim);
-      max-width: 800px; width: 100%;
-      max-height: 85vh; overflow-y: auto;
-      padding: 30px;
-      position: relative;
-      font-size: 13px; line-height: 1.7;
+    .timeline-item::before {
+      content: ''; position: absolute; left: -23px; top: 6px;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--accent); border: 2px solid var(--bg);
     }
-    .readme-modal .modal-content h1 { font-size: 22px; margin-bottom: 10px; }
-    .readme-modal .modal-content h2 { font-size: 16px; margin: 20px 0 8px; border-bottom: 1px solid var(--dim); padding-bottom: 4px; }
-    .readme-modal .modal-content h3 { font-size: 14px; margin: 15px 0 6px; }
-    .readme-modal .modal-content code {
-      background: rgba(0,255,65,0.06);
-      padding: 1px 5px; font-size: 12px;
+    .timeline-item .date {
+      font-size: 12px; color: var(--accent); font-weight: 600;
+      font-family: var(--mono);
     }
-    .readme-modal .modal-content pre {
-      background: rgba(0,0,0,0.5);
-      padding: 12px; overflow-x: auto;
-      border: 1px solid var(--dim);
-      font-size: 11px; margin: 8px 0;
-    }
-    .readme-modal .modal-content pre code { background: none; padding: 0; }
-    .readme-modal .modal-content a { color: var(--neon); }
-    .readme-modal .modal-content img { max-width: 100%; }
-    .readme-modal .modal-content hr { border: none; border-top: 1px solid var(--dim); margin: 15px 0; }
-    .readme-modal .modal-content table { border-collapse: collapse; width: 100%; margin: 10px 0; }
-    .readme-modal .modal-content th, .readme-modal .modal-content td {
-      border: 1px solid var(--dim); padding: 6px 10px; text-align: left; font-size: 12px;
-    }
-    .readme-modal .modal-content th { background: rgba(0,255,65,0.05); }
-    .readme-modal .close-btn {
-      position: sticky; top: 0; float: right;
-      background: transparent; border: 1px solid var(--dim);
-      color: var(--neon); padding: 4px 12px;
-      cursor: pointer; font-size: 16px; font-family: monospace;
-      transition: all 0.3s; z-index: 1;
-    }
-    .readme-modal .close-btn:hover { border-color: var(--neon); }
-    .readme-modal .loading {
-      text-align: center; padding: 40px;
-      color: var(--gray);
-    }
-    body.light .readme-modal { background: rgba(255,255,255,0.9); }
-
-    /* ─── Repos ─── */
-    .repos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-      gap: 18px; margin-top: 20px;
-    }
-    .repo-card {
-      border: 1px solid var(--dim);
-      padding: 20px; transition: all 0.5s;
-      position: relative; overflow: hidden;
-      transform-style: preserve-3d;
-    }
-    .repo-card::before {
-      content: ''; position: absolute; top: 0; left: 0;
-      width: 3px; height: 0; background: var(--neon);
-      transition: height 0.5s ease;
-    }
-    .repo-card::after {
-      content: ''; position: absolute; top: -50%; right: -50%;
-      width: 100%; height: 200%;
-      background: linear-gradient(45deg, transparent, rgba(0,255,65,0.02), transparent);
-      transform: rotate(45deg);
-      transition: all 0.8s;
-    }
-    .repo-card:hover::after { right: 100%; }
-    .repo-card:hover::before { height: 100%; }
-    .repo-card:hover {
-      border-color: var(--neon);
-      box-shadow: 0 0 30px rgba(0,255,65,0.12), 0 20px 60px rgba(0,0,0,0.4);
-      transform: translateZ(25px) rotateX(-1deg) rotateY(1deg);
-    }
-    .repo-card h3 { font-size: 13px; margin-bottom: 6px; }
-    .repo-card h3 a { color: var(--neon); text-decoration: none; }
-    .repo-card h3 a:hover { text-decoration: underline; }
-    .repo-card p { font-size: 11px; color: var(--gray); margin-bottom: 8px; }
-    .repo-meta { display: flex; gap: 12px; font-size: 10px; color: var(--gray); }
-    .severity-critical { color: #ff3333; text-shadow: 0 0 8px rgba(255,51,51,0.5); }
-    .severity-high { color: #ff8800; }
+    .timeline-item .desc { font-size: 14px; margin-top: 4px; }
 
     /* ─── Contact ─── */
     .contact-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 18px; margin-top: 20px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
     }
     .contact-card {
-      border: 1px solid var(--dim);
-      padding: 30px 20px; text-align: center;
-      transition: all 0.5s; text-decoration: none; color: var(--neon);
-      display: block; transform-style: preserve-3d;
-      position: relative; overflow: hidden;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+      text-align: center; text-decoration: none; color: var(--text);
+      transition: all 0.25s;
     }
-    .contact-card::before {
-      content: ''; position: absolute; bottom: 0; left: 0;
-      width: 100%; height: 0;
-      background: linear-gradient(to top, rgba(0,255,65,0.05), transparent);
-      transition: height 0.4s;
-    }
-    .contact-card:hover::before { height: 100%; }
     .contact-card:hover {
-      border-color: var(--neon);
-      box-shadow: 0 0 30px rgba(0,255,65,0.2);
-      transform: translateZ(35px) rotateX(-2deg) rotateY(2deg);
+      box-shadow: var(--shadow-lg); transform: translateY(-3px);
+      border-color: var(--accent);
     }
-    .contact-card .icon { font-size: 32px; margin-bottom: 10px; display: block; }
-    .contact-card .label { font-size: 10px; color: var(--gray); letter-spacing: 2px; }
-    .contact-card .value { font-size: 14px; margin-top: 6px; font-weight: bold; }
+    .contact-card .icon { font-size: 24px; display: block; margin-bottom: 6px; }
+    .contact-card .lbl { font-size: 11px; color: var(--text2); font-weight: 500; }
+    .contact-card .val { font-size: 14px; font-weight: 700; margin-top: 2px; }
 
-    footer {
-      text-align: center; padding: 40px 20px;
-      color: var(--gray); font-size: 11px;
-      border-top: 1px solid var(--dim);
+    /* ─── README Modal ─── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+      justify-content: center; align-items: center; padding: 40px;
     }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: #fff; color: #1e293b; max-width: 800px; width: 100%;
+      max-height: 85vh; overflow-y: auto; border-radius: 16px;
+      padding: 32px; position: relative; box-shadow: 0 25px 80px rgba(0,0,0,0.2);
+    }
+    body.dark .modal-box { background: #1e293b; color: #f1f5f9; }
+    .modal-box pre { background: #f1f5f9; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 12px; }
+    body.dark .modal-box pre { background: #0f172a; }
+    .modal-box code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+    body.dark .modal-box code { background: #0f172a; }
+    .modal-box h1 { font-size: 22px; margin-bottom: 10px; }
+    .modal-box h2 { font-size: 17px; margin: 20px 0 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; }
+    .modal-box a { color: var(--accent); }
+    .modal-box table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+    .modal-box th, .modal-box td { border: 1px solid #e2e8f0; padding: 6px 10px; font-size: 12px; }
+    .modal-box th { background: #f8fafc; }
+    .modal-close {
+      position: sticky; top: 0; float: right;
+      background: #f1f5f9; border: none; border-radius: 8px;
+      color: #64748b; padding: 6px 14px; cursor: pointer;
+      font-size: 16px; transition: all 0.2s;
+    }
+    .modal-close:hover { background: #e2e8f0; color: #1e293b; }
+
+    /* ─── Footer ─── */
+    footer { text-align: center; padding: 40px 24px; color: var(--text2); font-size: 13px; border-top: 1px solid var(--border); }
 
     /* ─── Animations ─── */
-    .fade-in {
-      opacity: 0; transform: translateY(40px) translateZ(-20px);
-      transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .fade-in.visible { opacity: 1; transform: translateY(0) translateZ(0); }
-    .delay-1 { transition-delay: 0.1s; }
-    .delay-2 { transition-delay: 0.2s; }
-    .delay-3 { transition-delay: 0.3s; }
-    .delay-4 { transition-delay: 0.4s; }
-
-    /* Floating particles */
-    .float-particle {
-      position: fixed; pointer-events: none;
-      font-size: 8px; color: var(--neon);
-      opacity: 0.1; z-index: 0;
-      animation: floatUp linear infinite;
-    }
-    @keyframes floatUp {
-      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-      10% { opacity: 0.12; }
-      90% { opacity: 0.12; }
-      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-    }
-
-    /* Scanline overlay */
-    .scanlines {
-      position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none; z-index: 9999;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,255,65,0.015) 2px,
-        rgba(0,255,65,0.015) 4px
-      );
-    }
+    .fade-in { opacity: 0; transform: translateY(24px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .delay-1 { transition-delay: 0.08s; }
+    .delay-2 { transition-delay: 0.15s; }
+    .delay-3 { transition-delay: 0.22s; }
   </style>
 </head>
 <body>
-  <canvas id="particle3d"></canvas>
-  <div class="scanlines"></div>
-
-  <!-- Floating particles -->
-  <div id="floatContainer"></div>
-
-  <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
-
+  <button class="theme-toggle" id="themeToggle">🌙</button>
   <nav>
-    <a href="#home">~Home</a>
+    <a href="#home">Home</a>
     <a href="#about">About</a>
     <a href="#skills">Skills</a>
     <a href="#tools">Tools</a>
@@ -483,383 +320,217 @@
   </nav>
 
   <section id="home">
-    <div class="hero-badge">SECURITY RESEARCHER // BUG BOUNTY</div>
+    <div class="badge"><span>🔬</span> Security Researcher</div>
     <h1>Ridhin V A</h1>
-    <div class="typewriter" id="typewriter">
-      <span id="typedText"></span><span class="cursor">█</span>
-    </div>
+    <p class="sub">
+      <strong>Bug bounty hunter</strong> and <strong>security researcher</strong>.
+      Finding vulnerabilities, building exploit tools, and contributing to the security community.
+    </p>
     <div class="hero-links">
-      <a href="https://hackerone.com/realridhinofficia" target="_blank">HackerOne</a>
-      <a href="https://github.com/ridhinva" target="_blank">GitHub</a>
-      <a href="https://x.com/c_y_p_h3r" target="_blank">X/Twitter</a>
-      <a href="#contact">Contact</a>
+      <a class="primary" href="https://hackerone.com/realridhinofficia" target="_blank">🔴 HackerOne</a>
+      <a class="secondary" href="https://github.com/ridhinva" target="_blank">🐙 GitHub</a>
+      <a class="secondary" href="https://x.com/c_y_p_h3r" target="_blank">🐦 X/Twitter</a>
+      <a class="secondary" href="#contact">✉️ Contact</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="num">15+</div><div class="lbl">Exploit Tools</div></div>
+      <div class="stat"><div class="num">10</div><div class="lbl">Skill Kits</div></div>
+      <div class="stat"><div class="num">10+</div><div class="lbl">CVE Scanners</div></div>
+      <div class="stat"><div class="num">5+</div><div class="lbl">Bounty Programs</div></div>
     </div>
   </section>
 
   <section id="about">
-    <h2 class="section-title"><span>//</span> ABOUT_ME</h2>
+    <h2 class="sec-title">About Me</h2>
+    <p class="sec-sub">Background and what I do.</p>
     <div class="about-grid">
       <div class="about-text">
-        <p>I'm a <span class="hl">bug bounty hunter</span> and <span class="hl">security researcher</span> specializing in web app security, API testing, and exploit dev.</p>
-        <p style="margin-top:14px;">Finding vulns in real-world apps, building tools, and sharing with the community. From <span class="hl">SQLi</span> and <span class="hl">XSS</span> to <span class="hl">binary exploitation</span> and <span class="hl">crypto attacks</span> — I cover the full spectrum.</p>
-        <p style="margin-top:14px;">Active on <span class="hl">HackerOne</span>, <span class="hl">Hack The Box</span>, and multiple bounty programs.</p>
+        <p>I'm a <strong>bug bounty hunter</strong> and <strong>security researcher</strong> specializing in web application security, API testing, and exploit development.</p>
+        <p style="margin-top:14px;">I find vulnerabilities in real-world applications, build open-source exploit tools, and contribute to the security community. My work spans the full spectrum — from <strong>SQL injection</strong> and <strong>cross-site scripting</strong> to <strong>binary exploitation</strong> and <strong>cryptographic attacks</strong>.</p>
+        <p style="margin-top:14px;">Active on <strong>HackerOne</strong>, <strong>Hack The Box</strong>, and multiple bug bounty programs. Every tool I build is released publicly on GitHub with full documentation.</p>
       </div>
-      <div class="about-stats">
-        <div class="stat-card" data-tilt><div class="stat-num">15+</div><div class="stat-lbl">Exploit Tools</div></div>
-        <div class="stat-card" data-tilt><div class="stat-num">10</div><div class="stat-lbl">Skill Toolkits</div></div>
-        <div class="stat-card" data-tilt><div class="stat-num">10+</div><div class="stat-lbl">CVE Scanners</div></div>
-        <div class="stat-card" data-tilt><div class="stat-num">5+</div><div class="stat-lbl">Bounty Programs</div></div>
+      <div class="about-text">
+        <p><strong>Core Focus Areas:</strong></p>
+        <ul style="margin-top:8px;padding-left:18px;">
+          <li>Web application penetration testing</li>
+          <li>API & GraphQL security assessments</li>
+          <li>Exploit development & reverse engineering</li>
+          <li>Cloud infrastructure security (AWS, Azure, GCP)</li>
+          <li>Cryptographic attack analysis</li>
+          <li>Open-source security tooling</li>
+        </ul>
       </div>
     </div>
   </section>
 
   <section id="skills">
-    <h2 class="section-title"><span>//</span> SKILL_MAP</h2>
+    <h2 class="sec-title">Skills & Expertise</h2>
+    <p class="sec-sub">Technical proficiencies across security domains.</p>
     <div class="skills-grid">
       <div class="skill-group">
-        <h3>WEB APPLICATION</h3>
-        <div class="skill-item" data-pct="95"><div class="name"><span>SQL Injection</span><span>95%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="90"><div class="name"><span>XSS</span><span>90%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="88"><div class="name"><span>SSRF / SSTI / CMDi</span><span>88%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="85"><div class="name"><span>IDOR / CSRF / JWT</span><span>85%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <h3>Web Application</h3>
+        <div class="skill-item" data-pct="95"><div class="name"><span>SQL Injection</span><span class="pct">95%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="90"><div class="name"><span>Cross-Site Scripting</span><span class="pct">90%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="88"><div class="name"><span>SSRF / SSTI / CMDi</span><span class="pct">88%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="85"><div class="name"><span>IDOR / CSRF / JWT</span><span class="pct">85%</span></div><div class="bar"><div class="fill"></div></div></div>
         <div class="skill-tags"><span>SQLi</span><span>XSS</span><span>SSRF</span><span>SSTI</span><span>CMDi</span><span>IDOR</span><span>CSRF</span><span>JWT</span></div>
       </div>
       <div class="skill-group">
-        <h3>API & INFRASTRUCTURE</h3>
-        <div class="skill-item" data-pct="92"><div class="name"><span>REST / GraphQL</span><span>92%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="80"><div class="name"><span>K8s / Docker</span><span>80%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="78"><div class="name"><span>Cloud (AWS/Azure/GCP)</span><span>78%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="75"><div class="name"><span>AD / Windows</span><span>75%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <h3>API & Infrastructure</h3>
+        <div class="skill-item" data-pct="92"><div class="name"><span>REST / GraphQL</span><span class="pct">92%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="80"><div class="name"><span>Kubernetes / Docker</span><span class="pct">80%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="78"><div class="name"><span>Cloud (AWS/Azure/GCP)</span><span class="pct">78%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="75"><div class="name"><span>Active Directory</span><span class="pct">75%</span></div><div class="bar"><div class="fill"></div></div></div>
         <div class="skill-tags"><span>REST</span><span>GraphQL</span><span>K8s</span><span>Docker</span><span>AWS</span><span>Azure</span><span>AD</span></div>
       </div>
       <div class="skill-group">
-        <h3>EXPLOIT & REVERSING</h3>
-        <div class="skill-item" data-pct="85"><div class="name"><span>Binary Exploitation</span><span>85%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="82"><div class="name"><span>ROP / Shellcode</span><span>82%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="80"><div class="name"><span>Heap / Stack Overflow</span><span>80%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="75"><div class="name"><span>VM Reverse</span><span>75%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <h3>Exploit Development</h3>
+        <div class="skill-item" data-pct="85"><div class="name"><span>Binary Exploitation</span><span class="pct">85%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="82"><div class="name"><span>ROP / Shellcode</span><span class="pct">82%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="80"><div class="name"><span>Heap / Stack Overflow</span><span class="pct">80%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="75"><div class="name"><span>VM Reverse Engineering</span><span class="pct">75%</span></div><div class="bar"><div class="fill"></div></div></div>
         <div class="skill-tags"><span>ROP</span><span>Shellcode</span><span>Fuzzing</span><span>UAF</span><span>Format String</span></div>
       </div>
       <div class="skill-group">
-        <h3>CRYPTO & OSINT</h3>
-        <div class="skill-item" data-pct="85"><div class="name"><span>RSA / Hash Attacks</span><span>85%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="80"><div class="name"><span>Symmetric Attacks</span><span>80%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="72"><div class="name"><span>Lattice Crypto</span><span>72%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="88"><div class="name"><span>OSINT / Domain Recon</span><span>88%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <h3>Crypto & OSINT</h3>
+        <div class="skill-item" data-pct="85"><div class="name"><span>RSA / Hash Attacks</span><span class="pct">85%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="80"><div class="name"><span>Symmetric Cipher Attacks</span><span class="pct">80%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="72"><div class="name"><span>Lattice Cryptanalysis</span><span class="pct">72%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="88"><div class="name"><span>OSINT / Recon</span><span class="pct">88%</span></div><div class="bar"><div class="fill"></div></div></div>
         <div class="skill-tags"><span>RSA</span><span>Hash</span><span>Lattice</span><span>AES</span><span>OSINT</span><span>Recon</span></div>
       </div>
     </div>
   </section>
 
   <section id="tools">
-    <h2 class="section-title"><span>//</span> EXPLOIT_TOOLS</h2>
-    <p style="font-size:12px;color:var(--gray);margin-bottom:15px;">15+ open-source security tools — click any to view on GitHub with full install & usage docs.</p>
+    <h2 class="sec-title">Tools & Projects</h2>
+    <p class="sec-sub">Open-source security tools — click any to view the README.</p>
     <div class="filter-bar" id="filterBar">
-      <button class="filter-btn active" data-filter="all">ALL</button>
-      <button class="filter-btn" data-filter="cve">🔴 CVE</button>
-      <button class="filter-btn" data-filter="web">🌐 Web</button>
-      <button class="filter-btn" data-filter="api">🔌 API</button>
-      <button class="filter-btn" data-filter="infra">🖥️ Infra</button>
-      <button class="filter-btn" data-filter="crypto">🔐 Crypto</button>
-      <button class="filter-btn" data-filter="exploit">💥 Exploit</button>
-      <button class="filter-btn" data-filter="mobile">📱 Mobile</button>
-      <button class="filter-btn" data-filter="wireless">📡 Wireless</button>
-      <button class="filter-btn" data-filter="osint">🕵️ OSINT</button>
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="cve">CVE Scanners</button>
+      <button class="filter-btn" data-filter="web">Web</button>
+      <button class="filter-btn" data-filter="api">API</button>
+      <button class="filter-btn" data-filter="infra">Infrastructure</button>
+      <button class="filter-btn" data-filter="exploit">Exploit</button>
+      <button class="filter-btn" data-filter="other">Other</button>
     </div>
-    <div class="repos-grid" id="toolsGrid">
-      <div class="repo-card" data-cat="cve"><h3><span class="severity-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-9082" target="_blank">CVE-2026-9082</a></h3><span class="tool-icon">🐘</span><p>Drupal PostgreSQL SQLi — CISA KEV #1</p><div class="repo-meta"><span>🔴 CRITICAL</span><span>🐍 Python</span><span>Mass scanner</span></div></div>
-      <div class="repo-card" data-cat="cve"><h3><span class="severity-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-0300-PANOS-RCE" target="_blank">CVE-2026-0300</a></h3><span class="tool-icon">🛡️</span><p>PAN-OS Captive Portal BOF RCE (root)</p><div class="repo-meta"><span>🔴 CRITICAL</span><span>CISA KEV</span></div></div>
-      <div class="repo-card" data-cat="cve"><h3><span class="severity-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-0073-ADBD-Bypass" target="_blank">CVE-2026-0073</a></h3><span class="tool-icon">📱</span><p>Android ADB Authentication Bypass</p><div class="repo-meta"><span>🔴 CRITICAL</span><span>CISA KEV</span></div></div>
-      <div class="repo-card" data-cat="cve"><h3><span class="severity-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-3854-GHE-RCE" target="_blank">CVE-2026-3854</a></h3><span class="tool-icon">🐙</span><p>GitHub Enterprise Server RCE</p><div class="repo-meta"><span>🔴 CRITICAL</span></div></div>
-      <div class="repo-card" data-cat="cve"><h3><span class="severity-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-1731-BeyondTrust-RCE" target="_blank">CVE-2026-1731</a></h3><span class="tool-icon">🔗</span><p>BeyondTrust Pre-auth RCE</p><div class="repo-meta"><span>🔴 CRITICAL</span></div></div>
-      <div class="repo-card" data-cat="cve"><h3><span class="severity-critical">●</span> <a href="https://github.com/ridhinva/CVE-2025-34291-Langflow-Scanner" target="_blank">CVE-2025-34291</a></h3><span class="tool-icon">🔀</span><p>Langflow CORS Vulnerability</p><div class="repo-meta"><span>🟠 HIGH</span></div></div>
-      <div class="repo-card" data-cat="web"><h3><a href="https://github.com/ridhinva/Web-Security-Toolkit" target="_blank">Web-Security-Toolkit</a></h3><span class="tool-icon">🌐</span><p>8 scanners: SQLi, XSS, SSRF, SSTI, CMDi, IDOR, CSRF, JWT</p><div class="repo-meta"><span>⭐ 8 tools</span><span>🐍 Python</span></div></div>
-      <div class="repo-card" data-cat="api"><h3><a href="https://github.com/ridhinva/API-Security-Toolkit" target="_blank">API-Security-Toolkit</a></h3><span class="tool-icon">🔌</span><p>REST, GraphQL, WebSocket, gRPC scanners</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
-      <div class="repo-card" data-cat="infra"><h3><a href="https://github.com/ridhinva/Infra-Security-Toolkit" target="_blank">Infra-Security-Toolkit</a></h3><span class="tool-icon">🖥️</span><p>Linux, Windows, AD, K8s, Docker, Cloud</p><div class="repo-meta"><span>⭐ 6 tools</span></div></div>
-      <div class="repo-card" data-cat="crypto"><h3><a href="https://github.com/ridhinva/Crypto-Attack-Toolkit" target="_blank">Crypto-Attack-Toolkit</a></h3><span class="tool-icon">🔐</span><p>RSA, hash, lattice, symmetric attacks</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
-      <div class="repo-card" data-cat="exploit"><h3><a href="https://github.com/ridhinva/Exploit-Dev-Toolkit" target="_blank">Exploit-Dev-Toolkit</a></h3><span class="tool-icon">💥</span><p>Fuzzer, payloads, ROP, shellcode encoder</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
-      <div class="repo-card" data-cat="exploit"><h3><a href="https://github.com/ridhinva/Reversing-Toolkit" target="_blank">Reversing-Toolkit</a></h3><span class="tool-icon">🔧</span><p>Bin exploit, heap attacks, VM reversing</p><div class="repo-meta"><span>⭐ 3 tools</span></div></div>
-      <div class="repo-card" data-cat="mobile"><h3><a href="https://github.com/ridhinva/Mobile-Security-Toolkit" target="_blank">Mobile-Security-Toolkit</a></h3><span class="tool-icon">📱</span><p>Android & iOS app security testing</p><div class="repo-meta"><span>⭐ 2 tools</span></div></div>
-      <div class="repo-card" data-cat="wireless"><h3><a href="https://github.com/ridhinva/Wireless-Security-Toolkit" target="_blank">Wireless-Security-Toolkit</a></h3><span class="tool-icon">📡</span><p>WiFi, Bluetooth/BLE, RFID/NFC</p><div class="repo-meta"><span>⭐ 3 tools</span></div></div>
-      <div class="repo-card" data-cat="osint"><h3><a href="https://github.com/ridhinva/OSINT-Toolkit" target="_blank">OSINT-Toolkit</a></h3><span class="tool-icon">🕵️</span><p>Domain recon, email OSINT, breach check</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
-      <div class="repo-card" data-cat="infra"><h3><a href="https://github.com/ridhinva/Cloud-Security-Toolkit" target="_blank">Cloud-Security-Toolkit</a></h3><span class="tool-icon">☁️</span><p>AWS, Azure, GCP, IaC scanners</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
+    <div class="tools-grid" id="toolsGrid">
+      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-9082" target="_blank">CVE-2026-9082</a></h3><p>Drupal PostgreSQL SQLi — CISA KEV (May 2026)</p><div class="tool-meta"><span>Critical</span><span>Python</span><span>Mass Scanner</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-0300-PANOS-RCE" target="_blank">CVE-2026-0300</a></h3><p>PAN-OS Captive Portal Buffer Overflow RCE</p><div class="tool-meta"><span>Critical</span><span>CISA KEV</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-0073-ADBD-Bypass" target="_blank">CVE-2026-0073</a></h3><p>Android ADB Authentication Bypass</p><div class="tool-meta"><span>Critical</span><span>CISA KEV</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-3854-GHE-RCE" target="_blank">CVE-2026-3854</a></h3><p>GitHub Enterprise Server RCE</p><div class="tool-meta"><span>Critical</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-1731-BeyondTrust-RCE" target="_blank">CVE-2026-1731</a></h3><p>BeyondTrust Pre-auth RCE</p><div class="tool-meta"><span>Critical</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><span class="cve-high">●</span> <a href="https://github.com/ridhinva/CVE-2025-34291-Langflow-Scanner" target="_blank">CVE-2025-34291</a></h3><p>Langflow CORS Vulnerability Scanner</p><div class="tool-meta"><span>High</span></div></div>
+      <div class="tool-card" data-cat="web"><h3><a href="https://github.com/ridhinva/Web-Security-Toolkit" target="_blank">Web-Security-Toolkit</a></h3><p>8 scanners: SQLi, XSS, SSRF, SSTI, CMDi, IDOR, CSRF, JWT</p><div class="tool-meta"><span>8 tools</span><span>Python</span></div></div>
+      <div class="tool-card" data-cat="api"><h3><a href="https://github.com/ridhinva/API-Security-Toolkit" target="_blank">API-Security-Toolkit</a></h3><p>REST, GraphQL, WebSocket, gRPC vulnerability scanners</p><div class="tool-meta"><span>4 tools</span></div></div>
+      <div class="tool-card" data-cat="infra"><h3><a href="https://github.com/ridhinva/Infra-Security-Toolkit" target="_blank">Infra-Security-Toolkit</a></h3><p>Linux, Windows, AD, K8s, Docker, Cloud scanners</p><div class="tool-meta"><span>6 tools</span></div></div>
+      <div class="tool-card" data-cat="other"><h3><a href="https://github.com/ridhinva/Crypto-Attack-Toolkit" target="_blank">Crypto-Attack-Toolkit</a></h3><p>RSA, hash, lattice, symmetric cipher attack tools</p><div class="tool-meta"><span>4 tools</span></div></div>
+      <div class="tool-card" data-cat="exploit"><h3><a href="https://github.com/ridhinva/Exploit-Dev-Toolkit" target="_blank">Exploit-Dev-Toolkit</a></h3><p>Fuzzer, payload generator, ROP builder, shellcode encoder</p><div class="tool-meta"><span>4 tools</span></div></div>
+      <div class="tool-card" data-cat="exploit"><h3><a href="https://github.com/ridhinva/Reversing-Toolkit" target="_blank">Reversing-Toolkit</a></h3><p>Binary exploitation, heap attacks, VM reverse engineering</p><div class="tool-meta"><span>3 tools</span></div></div>
+      <div class="tool-card" data-cat="infra"><h3><a href="https://github.com/ridhinva/Cloud-Security-Toolkit" target="_blank">Cloud-Security-Toolkit</a></h3><p>AWS, Azure, GCP, Terraform/CloudFormation scanners</p><div class="tool-meta"><span>4 tools</span></div></div>
+      <div class="tool-card" data-cat="other"><h3><a href="https://github.com/ridhinva/Mobile-Security-Toolkit" target="_blank">Mobile-Security-Toolkit</a></h3><p>Android & iOS app security testing tools</p><div class="tool-meta"><span>2 tools</span></div></div>
+      <div class="tool-card" data-cat="other"><h3><a href="https://github.com/ridhinva/Wireless-Security-Toolkit" target="_blank">Wireless-Security-Toolkit</a></h3><p>WiFi, Bluetooth/BLE, RFID/NFC testing</p><div class="tool-meta"><span>3 tools</span></div></div>
+      <div class="tool-card" data-cat="other"><h3><a href="https://github.com/ridhinva/OSINT-Toolkit" target="_blank">OSINT-Toolkit</a></h3><p>Domain recon, email OSINT, social search, breach analysis</p><div class="tool-meta"><span>4 tools</span></div></div>
     </div>
   </section>
 
   <section id="timeline">
-    <h2 class="section-title"><span>//</span> ACHIEVEMENTS</h2>
+    <h2 class="sec-title">Achievements</h2>
+    <p class="sec-sub">Recent milestones and contributions.</p>
     <div class="timeline">
-      <div class="timeline-item"><div class="date">2026-05-22</div><div class="desc"><strong>CISA KEV</strong> — CVE-2026-9082 Drupal SQLi added to known exploited vulns catalog</div></div>
-      <div class="timeline-item"><div class="date">2026-05-22</div><div class="desc"><strong>TwitterScraper</strong> — Released tool to search tweets without API keys</div></div>
-      <div class="timeline-item"><div class="date">2026-05-22</div><div class="desc"><strong>15+ Exploit Tools</strong> — Released 5 skill toolkit repos (Web, API, Infra, Crypto, Exploit, Reversing, Cloud, OSINT, Mobile, Wireless)</div></div>
-      <div class="timeline-item"><div class="date">2026-05-21</div><div class="desc"><strong>CVE Scanners</strong> — Released scanners for PAN-OS, ADBD, GHE, BeyondTrust, Langflow</div></div>
-      <div class="timeline-item"><div class="date">2026-05-20</div><div class="desc"><strong>ds4 PR</strong> — Submitted SSE keepalive fix to antirez/ds4 (#222 wall-clock timer)</div></div>
-      <div class="timeline-item"><div class="date">2026-05-04</div><div class="desc"><strong>CISA KEV</strong> — CVE-2026-0073 Android ADBD auth bypass added</div></div>
-      <div class="timeline-item"><div class="date">2026-03-10</div><div class="desc"><strong>CISA KEV</strong> — CVE-2026-3854 GitHub Enterprise Server RCE added</div></div>
-      <div class="timeline-item"><div class="date">2026-02-06</div><div class="desc"><strong>CISA KEV</strong> — CVE-2026-1731 BeyondTrust pre-auth RCE added</div></div>
-      <div class="timeline-item"><div class="date">2026</div><div class="desc"><strong>HTB CTF</strong> — Solved hardware TPM, Modbus, Casino, Satellite challenges</div></div>
-      <div class="timeline-item"><div class="date">2026</div><div class="desc"><strong>Hak5</strong> — Submitted MFA Fatigue + Telegram Exfil USB Rubber Ducky payloads</div></div>
+      <div class="timeline-item"><div class="date">2026-05-22</div><div class="desc"><strong>CISA KEV</strong> — CVE-2026-9082 Drupal SQLi added to known exploited vulnerabilities catalog</div></div>
+      <div class="timeline-item"><div class="date">2026-05-22</div><div class="desc"><strong>Release</strong> — Launched 10+ open-source exploit tool repositories covering web, API, cloud, crypto, reversing, and wireless security</div></div>
+      <div class="timeline-item"><div class="date">2026-05-21</div><div class="desc"><strong>Release</strong> — Published CVE scanners for PAN-OS (CVE-2026-0300), ADBD (CVE-2026-0073), GHE (CVE-2026-3854), BeyondTrust (CVE-2026-1731), Langflow (CVE-2025-34291)</div></div>
+      <div class="timeline-item"><div class="date">2026-05-20</div><div class="desc"><strong>Open Source</strong> — Submitted SSE keepalive fix to antirez/ds4 (#222) — wall-clock timer for prefill stalls</div></div>
+      <div class="timeline-item"><div class="date">2026-05-04</div><div class="desc"><strong>CISA KEV</strong> — CVE-2026-0073 Android ADBD authentication bypass added to KEV catalog</div></div>
+      <div class="timeline-item"><div class="date">2026</div><div class="desc"><strong>CTF</strong> — Solved hardware TPM, Modbus, Casino, and Satellite challenges on Hack The Box</div></div>
+      <div class="timeline-item"><div class="date">2026</div><div class="desc"><strong>Hak5</strong> — Contributed MFA Fatigue + Telegram Exfiltration USB Rubber Ducky payloads</div></div>
     </div>
   </section>
 
   <section id="contact">
-    <h2 class="section-title"><span>//</span> CONTACT</h2>
+    <h2 class="sec-title">Get In Touch</h2>
+    <p class="sec-sub">Open to collaboration on security research and bug bounty.</p>
     <div class="contact-grid">
-      <a class="contact-card" href="https://hackerone.com/realridhinofficia" target="_blank">
-        <span class="icon">🔴</span>
-        <span class="label">HACKERONE</span>
-        <span class="value">realridhinofficia</span>
-      </a>
-      <a class="contact-card" href="https://github.com/ridhinva" target="_blank">
-        <span class="icon">🐙</span>
-        <span class="label">GITHUB</span>
-        <span class="value">ridhinva</span>
-      </a>
-      <a class="contact-card" href="https://x.com/c_y_p_h3r" target="_blank">
-        <span class="icon">🐦</span>
-        <span class="label">X / TWITTER</span>
-        <span class="value">@c_y_p_h3r</span>
-      </a>
-      <a class="contact-card" href="mailto:ridhinofficial@gmail.com">
-        <span class="icon">✉️</span>
-        <span class="label">EMAIL</span>
-        <span class="value">ridhinofficial@gmail.com</span>
-      </a>
-    </div>
-    <div style="margin-top:35px;text-align:center;">
-      <p style="font-size:11px;color:var(--gray);letter-spacing:3px;">[ STATUS: ACTIVE  //  OPEN FOR COLLAB ]</p>
+      <a class="contact-card" href="https://hackerone.com/realridhinofficia" target="_blank"><span class="icon">🔴</span><span class="lbl">HackerOne</span><span class="val">realridhinofficia</span></a>
+      <a class="contact-card" href="https://github.com/ridhinva" target="_blank"><span class="icon">🐙</span><span class="lbl">GitHub</span><span class="val">ridhinva</span></a>
+      <a class="contact-card" href="https://x.com/c_y_p_h3r" target="_blank"><span class="icon">🐦</span><span class="lbl">X / Twitter</span><span class="val">@c_y_p_h3r</span></a>
+      <a class="contact-card" href="mailto:ridhinofficial@gmail.com"><span class="icon">✉️</span><span class="lbl">Email</span><span class="val">ridhinofficial@gmail.com</span></a>
     </div>
   </section>
 
-  <footer>
-    <p>SYSTEM: ridhinva.github.io  |  © 2026  |  root@ridhinva:~# _</p>
-    <p style="margin-top:8px;color:var(--dim);font-size:10px;">> Matrix rain // 3D particles // Neon glow</p>
-  </footer>
+  <footer>© 2026 Ridhin V A. Built with care.</footer>
 
   <!-- README Modal -->
-  <div class="readme-modal" id="readmeModal">
-    <div class="modal-content" id="readmeContent">
-      <button class="close-btn" id="closeModal">✕</button>
-      <div class="loading">⏳ Loading README...</div>
+  <div class="modal-overlay" id="readmeModal">
+    <div class="modal-box" id="readmeContent">
+      <button class="modal-close" id="closeModal">✕</button>
+      <div style="text-align:center;padding:30px;color:#94a3b8;">Loading README...</div>
     </div>
   </div>
 
   <script>
-    // ─── 3D Particle Network ───
-    const canvas = document.getElementById('particle3d');
-    const ctx = canvas.getContext('2d');
-    let W, H;
-    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-    resize();
-    window.addEventListener('resize', resize);
+    // Theme toggle
+    const themeBtn = document.getElementById('themeToggle');
+    themeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      themeBtn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    });
+    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme:dark)').matches)) {
+      document.body.classList.add('dark');
+      themeBtn.textContent = '☀️';
+    }
 
-    const PARTICLE_COUNT = 100;
-    const particles = [];
-    const CONNECTION_DIST = 130;
-
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      particles.push({
-        x: Math.random() * W, y: Math.random() * H,
-        z: Math.random() * 600 - 300,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        vz: (Math.random() - 0.5) * 0.2,
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        document.querySelectorAll('#toolsGrid .tool-card').forEach(card => {
+          card.style.display = filter === 'all' || card.dataset.cat === filter ? '' : 'none';
+        });
       });
-    }
+    });
 
-    let mouseX = W / 2, mouseY = H / 2;
-    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
-
-    function project(x, y, z) {
-      const fov = 400;
-      const scale = fov / (fov + z);
-      return { x: x * scale + W / 2, y: y * scale + H / 2, scale };
-    }
-
-    function drawParticles3d() {
-      ctx.clearRect(0, 0, W, H);
-
-      // Mouse influence
-      const mx = mouseX - W / 2;
-      const my = mouseY - H / 2;
-
-      for (let p of particles) {
-        p.vx += (Math.random() - 0.5) * 0.03 + (mx - p.x) * 0.00001;
-        p.vy += (Math.random() - 0.5) * 0.03 + (my - p.y) * 0.00001;
-        p.vz += (Math.random() - 0.5) * 0.01;
-        p.vx *= 0.98; p.vy *= 0.98; p.vz *= 0.98;
-        p.x += p.vx; p.y += p.vy; p.z += p.vz;
-        if (p.z > 300) p.z = -300;
-        if (p.z < -300) p.z = 300;
-        if (p.x > W * 1.5) p.x = -W * 0.5;
-        if (p.x < -W * 0.5) p.x = W * 1.5;
-        if (p.y > H * 1.5) p.y = -H * 0.5;
-        if (p.y < -H * 0.5) p.y = H * 1.5;
-      }
-
-      // Sort by z for depth
-      particles.sort((a, b) => a.z - b.z);
-
-      for (let i = 0; i < particles.length; i++) {
-        const p1 = project(particles[i].x, particles[i].y, particles[i].z);
-        ctx.beginPath();
-        ctx.arc(p1.x, p1.y, 2 * p1.scale, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0,255,65,${0.3 * p1.scale})`;
-        ctx.fill();
-
-        for (let j = i + 1; j < particles.length; j++) {
-          const p2 = project(particles[j].x, particles[j].y, particles[j].z);
-          const dx = p1.x - p2.x, dy = p1.y - p2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < CONNECTION_DIST) {
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            const alpha = (1 - dist / CONNECTION_DIST) * 0.2 * Math.min(p1.scale, p2.scale);
-            ctx.strokeStyle = `rgba(0,255,65,${alpha})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-        }
-      }
-      requestAnimationFrame(drawParticles3d);
-    }
-    drawParticles3d();
-
-    // ─── Typewriter ───
-    const phrases = [
-      '$ whoami → Bug Bounty Hunter',
-      '$ cat /etc/pwned → 15+ exploit tools',
-      '$ nmap -sV target → Web | API | Infra',
-      '$ ./exploit.sh → CVE-2026-9082',
-      '$ hackThePlanet(); // ACTIVE',
-    ];
-    let phraseIdx = 0, charIdx = 0, isDeleting = false;
-    const el = document.getElementById('typedText');
-    function typeEffect() {
-      const current = phrases[phraseIdx];
-      if (!isDeleting) {
-        el.textContent = current.substring(0, charIdx + 1);
-        charIdx++;
-        if (charIdx === current.length) { isDeleting = true; setTimeout(typeEffect, 2000); return; }
-      } else {
-        el.textContent = current.substring(0, charIdx - 1);
-        charIdx--;
-        if (charIdx === 0) { isDeleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; }
-      }
-      setTimeout(typeEffect, isDeleting ? 30 : 70);
-    }
-    typeEffect();
-
-    // ─── Skill bars on scroll ───
-    const skillObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const fills = entry.target.querySelectorAll('.fill');
-          fills.forEach(f => {
-            const pct = f.closest('[data-pct]')?.dataset.pct || 0;
-            setTimeout(() => { f.style.width = pct + '%'; }, 200);
+    // Skill bars on scroll
+    const skillObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('.fill').forEach(f => {
+            f.style.width = f.closest('[data-pct]').dataset.pct + '%';
           });
         }
       });
     }, { threshold: 0.2 });
-    document.querySelectorAll('.skill-group').forEach(el => skillObserver.observe(el));
+    document.querySelectorAll('.skill-group').forEach(el => skillObs.observe(el));
 
-    // ─── Fade-in observer ───
-    const fadeObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+    // Fade-in
+    new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 }).observe(document.querySelector('.fade-in')); // placeholder
 
-    // ─── Theme Toggle ───
-    const themeBtn = document.getElementById('themeToggle');
-    themeBtn.addEventListener('click', () => {
-      document.body.classList.toggle('light');
-      themeBtn.textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
-      localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
-    });
-    if (localStorage.getItem('theme') === 'light') {
-      document.body.classList.add('light');
-      themeBtn.textContent = '☀️';
-    }
-
-    // ─── Tool Category Filter ───
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const toolCards = document.querySelectorAll('#toolsGrid .repo-card');
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const filter = btn.dataset.filter;
-        toolCards.forEach(card => {
-          if (filter === 'all' || card.dataset.cat === filter) {
-            card.style.display = 'block';
-          } else {
-            card.style.display = 'none';
-          }
-        });
-      });
-    });
-    document.querySelectorAll('[data-tilt], .repo-card, .contact-card, .skill-group').forEach(card => {
-      card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width - 0.5;
-        const y = (e.clientY - rect.top) / rect.height - 0.5;
-        card.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateZ(15px)`;
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(800px) rotateY(0deg) rotateX(0deg) translateZ(0)';
-      });
-    });
-
-    // ─── Floating background symbols ───
-    const floatContainer = document.getElementById('floatContainer');
-    const symbols = ['{', '}', '[', ']', '<', '>', '_', '/', '\\', '|', '*', '&', '%', '$', '#', '@', '!', '?', '+', '=', '~', '`'];
-    for (let i = 0; i < 30; i++) {
-      const span = document.createElement('span');
-      span.className = 'float-particle';
-      span.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-      span.style.left = Math.random() * 100 + '%';
-      span.style.fontSize = (8 + Math.random() * 16) + 'px';
-      span.style.animationDuration = (15 + Math.random() * 25) + 's';
-      span.style.animationDelay = Math.random() * 20 + 's';
-      span.style.opacity = 0.03 + Math.random() * 0.08;
-      floatContainer.appendChild(span);
-    }
-
-    // ─── README Modal — Click repo to show README ───
+    // README Modal
     const modal = document.getElementById('readmeModal');
-    const modalContent = document.getElementById('readmeContent');
     const closeBtn = document.getElementById('closeModal');
-
     closeBtn.addEventListener('click', () => modal.classList.remove('open'));
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
 
-    document.querySelectorAll('#toolsGrid .repo-card h3 a').forEach(link => {
+    document.querySelectorAll('#toolsGrid .tool-card h3 a').forEach(link => {
       link.addEventListener('click', async (e) => {
         e.preventDefault();
-        const repoUrl = link.href;
-        // Extract owner/repo from URL
-        const match = repoUrl.match(/github\.com\/([^\/]+\/[^\/]+?)(?:\/|$)/);
-        if (!match) return;
-
+        const m = link.href.match(/github\.com\/([^\/]+\/[^\/]+?)(?:\/|$)/);
+        if (!m) return;
         modal.classList.add('open');
-        // Reset content to loading
-        modalContent.innerHTML = '<button class="close-btn" id="closeModal2">✕</button><div class="loading">⏳ Loading README...</div>';
+        document.getElementById('readmeContent').innerHTML = '<button class="modal-close" id="closeModal2">✕</button><div style="text-align:center;padding:30px;color:#94a3b8;">Loading README...</div>';
         document.getElementById('closeModal2').addEventListener('click', () => modal.classList.remove('open'));
-
         try {
-          const resp = await fetch(`https://api.github.com/repos/${match[1]}/readme`, {
-            headers: { 'Accept': 'application/vnd.github.v3.raw' }
-          });
-          if (!resp.ok) throw new Error('No README');
-          const md = await resp.text();
-
-          // Simple markdown-to-HTML renderer
+          const r = await fetch(`https://api.github.com/repos/${m[1]}/readme`, { headers: { 'Accept': 'application/vnd.github.v3.raw' } });
+          if (!r.ok) throw Error();
+          let md = await r.text();
           let html = md
-            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[c])
             .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
             .replace(/`([^`]+)`/g, '<code>$1</code>')
             .replace(/###### (.*)/g, '<h6>$1</h6>')
@@ -872,16 +543,10 @@
             .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
             .replace(/\*([^*]+)\*/g, '<em>$1</em>')
             .replace(/^- (.*)/gm, '<li>$1</li>')
-            .replace(/\n\n/g, '</p><p>')
-            .replace(/\n/g, '<br>');
-
-          html = '<button class="close-btn" id="closeModal2">✕</button><p>' + html + '</p>';
-          modalContent.innerHTML = html;
+            .replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
+          document.getElementById('readmeContent').innerHTML = '<button class="modal-close" id="closeModal2">✕</button>' + html;
           document.getElementById('closeModal2').addEventListener('click', () => modal.classList.remove('open'));
-        } catch (err) {
-          modalContent.innerHTML = '<button class="close-btn" id="closeModal2">✕</button><div class="loading">❌ Could not load README</div>';
-          document.getElementById('closeModal2').addEventListener('click', () => modal.classList.remove('open'));
-        }
+        } catch { location.href = link.href; }
       });
     });
   </script>
