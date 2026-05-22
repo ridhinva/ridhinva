@@ -4,150 +4,165 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ridhin V A | Security Researcher</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=PT+Mono&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #f8fafc;
-      --bg2: #ffffff;
-      --text: #1e293b;
-      --text2: #64748b;
-      --border: #e2e8f0;
-      --accent: #2563eb;
-      --accent2: #3b82f6;
-      --accent-light: #dbeafe;
-      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-lg: 0 10px 40px rgba(0,0,0,0.08);
-      --radius: 12px;
-      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      --mono: 'JetBrains Mono', 'Fira Code', monospace;
-    }
-    body.dark {
-      --bg: #0f172a;
-      --bg2: #1e293b;
-      --text: #f1f5f9;
-      --text2: #94a3b8;
-      --border: #334155;
-      --accent: #3b82f6;
-      --accent-light: #1e3a5f;
-      --shadow: 0 1px 3px rgba(0,0,0,0.2);
-      --shadow-lg: 0 10px 40px rgba(0,0,0,0.3);
+      --purple: #c770f0;
+      --purple-dark: #b95ae0;
+      --bg-dark: #0c0513;
+      --bg-gradient: linear-gradient(to left, rgb(27 20 41), rgb(20 15 35));
+      --card-bg: rgba(255,255,255,0.05);
+      --card-border: rgba(199,112,240,0.3);
+      --text-light: #e0d6f0;
+      --text-muted: #a78db8;
+      --font: 'Outfit', sans-serif;
+      --mono: 'PT Mono', monospace;
     }
     html { scroll-behavior: smooth; }
     body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      transition: background 0.3s, color 0.3s;
-      line-height: 1.6;
+      margin: 0;
+      font-family: var(--mono);
+      background: var(--bg-gradient);
+      color: var(--text-light);
+      overflow-x: hidden;
+      min-height: 100vh;
     }
-    ::selection { background: var(--accent); color: #fff; }
+    ::-webkit-scrollbar { width: 7px; }
+    ::-webkit-scrollbar-track { background: #2d1950; }
+    ::-webkit-scrollbar-thumb { background: rgba(178,121,216,0.959); border-radius: 12px; }
+    ::selection { background: var(--purple); color: #fff; }
 
-    /* ─── Theme Toggle ─── */
-    .theme-toggle {
-      position: fixed; top: 16px; right: 24px; z-index: 100;
-      background: var(--bg2); border: 1px solid var(--border);
-      color: var(--text); padding: 8px 14px; font-size: 16px;
-      cursor: pointer; border-radius: 8px;
-      transition: all 0.2s; box-shadow: var(--shadow);
-    }
-    .theme-toggle:hover { border-color: var(--accent); }
-
-    /* ─── Nav ─── */
+    /* ─── Navbar ─── */
     nav {
-      position: fixed; top: 0; width: 100%; z-index: 99;
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
-      padding: 0 24px; display: flex; justify-content: center; gap: 4px;
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: transparent;
+      padding: 0.3rem 2rem;
+      display: flex; justify-content: center; gap: 2px;
+      transition: all 0.3s;
+      font-size: 1.1rem;
     }
-    body.dark nav { background: rgba(15,23,42,0.85); }
+    nav.scrolled {
+      background: #1b1a2ea9;
+      backdrop-filter: blur(15px);
+      box-shadow: 0px 10px 10px 0px rgba(9,5,29,0.171);
+    }
     nav a {
-      color: var(--text2); text-decoration: none;
-      padding: 14px 18px; font-size: 13px; font-weight: 500;
+      color: var(--text-light); text-decoration: none;
+      padding: 0.8rem 1.2rem; font-weight: 500;
       transition: color 0.2s; position: relative;
+      font-family: var(--font);
+      letter-spacing: 0.5px;
     }
-    nav a:hover { color: var(--accent); }
-    nav a::after {
-      content: ''; position: absolute; bottom: 0; left: 50%;
-      width: 0; height: 2px; background: var(--accent);
-      transition: all 0.2s; transform: translateX(-50%);
-      border-radius: 2px;
+    nav a:hover { color: var(--purple); }
+
+    /* ─── Particle Background ─── */
+    canvas#particles {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0; pointer-events: none;
     }
-    nav a:hover::after { width: 60%; }
 
     section {
-      max-width: 1000px; margin: auto; padding: 100px 24px 60px;
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: auto; padding: 80px 24px;
     }
 
     /* ─── Hero ─── */
     #home {
-      min-height: 100vh; display: flex; flex-direction: column;
-      justify-content: center; max-width: 700px;
-    }
-    #home .badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--accent-light); color: var(--accent);
-      padding: 4px 14px; border-radius: 20px;
-      font-size: 12px; font-weight: 600; margin-bottom: 20px;
-      width: fit-content;
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; flex-direction: column;
+      text-align: center; padding-top: 120px;
     }
     #home h1 {
-      font-size: clamp(36px, 5vw, 56px);
-      font-weight: 800; letter-spacing: -1px;
-      line-height: 1.1; margin-bottom: 6px;
+      font-family: var(--font); font-size: clamp(32px, 5vw, 52px);
+      font-weight: 800; letter-spacing: 1px;
     }
-    #home .sub {
-      font-size: clamp(16px, 2vw, 20px);
-      color: var(--text2); margin-bottom: 20px;
-      line-height: 1.5;
+    #home h1 .wave {
+      display: inline-block;
+      animation: wave 2.5s ease-in-out infinite;
+      transform-origin: 70% 70%;
     }
-    #home .sub strong { color: var(--accent); font-weight: 600; }
-    .hero-links {
-      display: flex; gap: 10px; flex-wrap: wrap;
+    @keyframes wave {
+      0%,100% { transform: rotate(0deg); }
+      10% { transform: rotate(14deg); }
+      20% { transform: rotate(-8deg); }
+      30% { transform: rotate(14deg); }
+      40% { transform: rotate(-4deg); }
+      50% { transform: rotate(10deg); }
     }
-    .hero-links a {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 10px 22px; border-radius: 8px;
-      font-size: 13px; font-weight: 500; text-decoration: none;
-      transition: all 0.2s;
+    #home .sub-name {
+      font-family: var(--font); font-size: clamp(20px, 3vw, 36px);
+      font-weight: 700; margin-top: 8px;
     }
-    .hero-links .primary {
-      background: var(--accent); color: #fff;
-      box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+    #home .sub-name strong { color: var(--purple); }
+    .typewriter {
+      margin-top: 30px; font-size: 20px; min-height: 2em;
+      text-align: center;
     }
-    .hero-links .primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,99,235,0.4); }
-    .hero-links .secondary {
-      background: var(--bg2); color: var(--text);
-      border: 1px solid var(--border);
+    .typewriter span { color: var(--purple); font-weight: 600; }
+    .typewriter .cursor { animation: blink 0.7s step-end infinite; color: var(--purple); }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .hero-avatar {
+      margin: 30px auto;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      border: 3px solid var(--purple);
+      box-shadow: 0 0 40px rgba(199,112,240,0.3);
+      overflow: hidden;
+      background: linear-gradient(145deg, #2d1950, #1b1a2e);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 60px;
     }
-    .hero-links .secondary:hover { border-color: var(--accent); }
+
+    .hero-social {
+      display: flex; gap: 16px; justify-content: center; margin-top: 30px;
+    }
+    .hero-social a {
+      display: flex; align-items: center; justify-content: center;
+      width: 45px; height: 45px; border-radius: 50%;
+      background: rgba(199,112,240,0.1);
+      border: 1px solid var(--purple);
+      color: var(--purple); text-decoration: none; font-size: 20px;
+      transition: all 0.3s;
+    }
+    .hero-social a:hover {
+      background: var(--purple); color: #fff;
+      box-shadow: 0 0 20px rgba(199,112,240,0.4);
+      transform: translateY(-3px);
+    }
 
     .hero-stats {
-      display: flex; gap: 30px; margin-top: 35px; flex-wrap: wrap;
+      display: flex; gap: 40px; margin-top: 40px; flex-wrap: wrap; justify-content: center;
     }
     .hero-stats .stat { text-align: center; }
     .hero-stats .num {
-      font-size: 28px; font-weight: 800; color: var(--accent);
-      font-family: var(--mono);
+      font-size: 30px; font-weight: 800; color: var(--purple);
+      font-family: var(--font);
     }
-    .hero-stats .lbl { font-size: 12px; color: var(--text2); margin-top: 2px; }
+    .hero-stats .lbl { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
 
     /* ─── Section Titles ─── */
     .sec-title {
-      font-size: 28px; font-weight: 800; margin-bottom: 6px;
-      letter-spacing: -0.5px;
+      font-family: var(--font); font-size: 32px; font-weight: 700;
+      text-align: center; margin-bottom: 6px;
     }
+    .sec-title .purple { color: var(--purple); }
     .sec-sub {
-      color: var(--text2); font-size: 15px; margin-bottom: 35px;
+      text-align: center; color: var(--text-muted);
+      font-size: 16px; margin-bottom: 50px;
     }
 
     /* ─── About ─── */
     .about-grid {
-      display: grid; grid-template-columns: 1.2fr 1fr;
-      gap: 40px; align-items: start;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
     }
     @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; } }
-    .about-text { font-size: 15px; color: var(--text2); line-height: 1.8; }
-    .about-text strong { color: var(--text); font-weight: 600; }
+    .about-text { font-size: 16px; line-height: 1.8; color: var(--text-muted); }
+    .about-text strong { color: var(--purple); }
+    .about-text ul { margin-top: 12px; padding-left: 20px; }
+    .about-text li { margin-bottom: 6px; }
 
     /* ─── Skills ─── */
     .skills-grid {
@@ -155,122 +170,135 @@
     }
     @media (max-width: 768px) { .skills-grid { grid-template-columns: 1fr; } }
     .skill-group {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 24px;
-      transition: box-shadow 0.2s;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 16px; padding: 28px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s;
     }
-    .skill-group:hover { box-shadow: var(--shadow-lg); }
+    .skill-group:hover {
+      box-shadow: 0 5px 30px rgba(199,112,240,0.15);
+      transform: translateY(-5px);
+    }
     .skill-group h3 {
-      font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
-      color: var(--accent); margin-bottom: 16px; font-weight: 700;
+      font-family: var(--font); font-size: 14px; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--purple); margin-bottom: 18px;
+      font-weight: 700;
     }
-    .skill-item { margin-bottom: 10px; }
+    .skill-item { margin-bottom: 12px; }
     .skill-item .name {
       display: flex; justify-content: space-between;
-      font-size: 13px; margin-bottom: 4px;
+      font-size: 14px; margin-bottom: 4px;
     }
-    .skill-item .pct { color: var(--text2); font-family: var(--mono); font-size: 12px; }
+    .skill-item .pct { color: var(--text-muted); font-size: 12px; }
     .skill-item .bar {
-      height: 4px; background: var(--border); border-radius: 4px; overflow: hidden;
+      height: 5px; background: rgba(199,112,240,0.15);
+      border-radius: 10px; overflow: hidden;
     }
     .skill-item .fill {
-      height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2));
-      border-radius: 4px; width: 0;
-      transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+      height: 100%;
+      background: linear-gradient(90deg, var(--purple), #d99cf5);
+      border-radius: 10px; width: 0;
+      transition: width 1.5s cubic-bezier(0.22,1,0.36,1);
+      box-shadow: 0 0 8px var(--purple);
     }
-    .skill-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
     .skill-tags span {
-      background: var(--bg); color: var(--text2);
-      padding: 3px 10px; border-radius: 6px;
-      font-size: 11px; font-weight: 500;
+      background: rgba(199,112,240,0.08);
+      border: 1px solid rgba(199,112,240,0.2);
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 12px; color: var(--text-muted); transition: all 0.2s;
     }
+    .skill-tags span:hover { border-color: var(--purple); color: var(--purple); }
 
-    /* ─── Tools Grid ─── */
+    /* ─── Tools ─── */
     .filter-bar {
-      display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 24px;
+      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 30px;
     }
     .filter-btn {
-      background: var(--bg2); border: 1px solid var(--border);
-      color: var(--text2); padding: 6px 16px; border-radius: 8px;
-      font-size: 12px; font-weight: 500; cursor: pointer;
-      font-family: var(--font); transition: all 0.2s;
+      background: transparent; border: 1px solid rgba(199,112,240,0.3);
+      color: var(--text-muted); padding: 7px 20px; border-radius: 20px;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      font-family: var(--font); transition: all 0.3s;
     }
     .filter-btn:hover, .filter-btn.active {
-      border-color: var(--accent); color: var(--accent);
-      background: var(--accent-light);
+      background: rgba(199,112,240,0.15);
+      border-color: var(--purple); color: var(--purple);
     }
     .tools-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 16px;
+      gap: 20px;
     }
     .tool-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 20px;
-      cursor: pointer; transition: all 0.25s;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 16px; padding: 24px;
+      backdrop-filter: blur(10px); transition: all 0.3s;
+      cursor: pointer;
     }
     .tool-card:hover {
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-3px);
-      border-color: var(--accent);
+      box-shadow: 0 5px 35px rgba(199,112,240,0.15);
+      transform: translateY(-5px);
+      border-color: var(--purple);
     }
     .tool-card h3 {
-      font-size: 14px; font-weight: 700; margin-bottom: 4px;
+      font-family: var(--font); font-size: 16px; font-weight: 700; margin-bottom: 6px;
     }
-    .tool-card h3 a { color: var(--text); text-decoration: none; }
-    .tool-card h3 a:hover { color: var(--accent); }
-    .tool-card p { font-size: 12px; color: var(--text2); }
-    .tool-meta { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .tool-card h3 a { color: var(--text-light); text-decoration: none; }
+    .tool-card h3 a:hover { color: var(--purple); }
+    .tool-card p { font-size: 13px; color: var(--text-muted); }
+    .tool-meta { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
     .tool-meta span {
-      font-size: 11px; color: var(--text2);
-      background: var(--bg); padding: 2px 10px; border-radius: 6px;
+      font-size: 12px; background: rgba(199,112,240,0.08);
+      padding: 3px 12px; border-radius: 12px; color: var(--text-muted);
     }
-    .cve-critical { color: #dc2626; font-weight: 600; }
-    .cve-high { color: #ea580c; font-weight: 600; }
+    .cve-critical { color: #ff6b6b !important; }
 
     /* ─── Timeline ─── */
-    .timeline { position: relative; padding-left: 28px; }
+    .timeline { max-width: 700px; margin: auto; position: relative; padding-left: 30px; }
     .timeline::before {
-      content: ''; position: absolute; left: 7px; top: 0;
-      width: 2px; height: 100%; background: var(--border);
+      content: ''; position: absolute; left: 8px; top: 0;
+      width: 2px; height: 100%; background: rgba(199,112,240,0.2);
     }
     .timeline-item {
-      position: relative; margin-bottom: 28px; padding-left: 20px;
+      position: relative; margin-bottom: 32px; padding-left: 22px;
     }
     .timeline-item::before {
-      content: ''; position: absolute; left: -23px; top: 6px;
-      width: 10px; height: 10px; border-radius: 50%;
-      background: var(--accent); border: 2px solid var(--bg);
+      content: ''; position: absolute; left: -24px; top: 6px;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--purple); border: 2px solid #1b1429;
+      box-shadow: 0 0 10px rgba(199,112,240,0.3);
     }
-    .timeline-item .date {
-      font-size: 12px; color: var(--accent); font-weight: 600;
-      font-family: var(--mono);
-    }
-    .timeline-item .desc { font-size: 14px; margin-top: 4px; }
+    .timeline-item .date { font-size: 13px; color: var(--purple); font-weight: 600; }
+    .timeline-item .desc { font-size: 15px; margin-top: 4px; color: var(--text-muted); }
+    .timeline-item .desc strong { color: var(--text-light); }
 
     /* ─── Contact ─── */
     .contact-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 14px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px; max-width: 800px; margin: auto;
     }
     .contact-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 24px;
-      text-align: center; text-decoration: none; color: var(--text);
-      transition: all 0.25s;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 16px; padding: 28px; text-align: center;
+      text-decoration: none; color: var(--text-light);
+      backdrop-filter: blur(10px); transition: all 0.3s;
     }
     .contact-card:hover {
-      box-shadow: var(--shadow-lg); transform: translateY(-3px);
-      border-color: var(--accent);
+      box-shadow: 0 5px 30px rgba(199,112,240,0.15);
+      transform: translateY(-5px); border-color: var(--purple);
     }
-    .contact-card .icon { font-size: 24px; display: block; margin-bottom: 6px; }
-    .contact-card .lbl { font-size: 11px; color: var(--text2); font-weight: 500; }
-    .contact-card .val { font-size: 14px; font-weight: 700; margin-top: 2px; }
+    .contact-card .icon { font-size: 28px; display: block; margin-bottom: 8px; }
+    .contact-card .lbl { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+    .contact-card .val { font-size: 15px; font-weight: 700; margin-top: 4px; color: var(--purple); }
 
-    /* ─── Footer ─── */
-    footer { text-align: center; padding: 40px 24px; color: var(--text2); font-size: 13px; border-top: 1px solid var(--border); }
+    footer {
+      text-align: center; padding: 40px 24px;
+      color: var(--text-muted); font-size: 14px;
+      border-top: 1px solid rgba(199,112,240,0.1);
+    }
+    footer .purple { color: var(--purple); }
 
     /* ─── Animations ─── */
-    .fade-in { opacity: 0; transform: translateY(24px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
+    .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.22,1,0.36,1); }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
     .delay-1 { transition-delay: 0.08s; }
     .delay-2 { transition-delay: 0.15s; }
@@ -278,8 +306,8 @@
   </style>
 </head>
 <body>
-  <button class="theme-toggle" id="themeToggle">🌙</button>
-  <nav>
+  <canvas id="particles"></canvas>
+  <nav id="navbar">
     <a href="#home">Home</a>
     <a href="#about">About</a>
     <a href="#skills">Skills</a>
@@ -289,63 +317,59 @@
   </nav>
 
   <section id="home">
-    <div class="badge"><span>🔬</span> Security Researcher</div>
-    <h1>Ridhin V A</h1>
-    <p class="sub">
-      <strong>Bug bounty hunter</strong> and <strong>security researcher</strong>.
-      Finding vulnerabilities, building exploit tools, and contributing to the security community.
-    </p>
-    <div class="hero-links">
-      <a class="primary" href="https://hackerone.com/realridhinofficia" target="_blank">🔴 HackerOne</a>
-      <a class="secondary" href="https://github.com/ridhinva" target="_blank">🐙 GitHub</a>
-      <a class="secondary" href="https://x.com/c_y_p_h3r" target="_blank">🐦 X/Twitter</a>
-      <a class="secondary" href="#contact">✉️ Contact</a>
+    <h1>Hi There! <span class="wave">👋</span></h1>
+    <div class="sub-name">I'M <strong>RIDHIN V A</strong></div>
+    <div class="hero-avatar">🔬</div>
+    <div class="typewriter"><span id="typedText"></span><span class="cursor">|</span></div>
+    <div class="hero-social">
+      <a href="https://hackerone.com/realridhinofficia" target="_blank" title="HackerOne">🔴</a>
+      <a href="https://github.com/ridhinva" target="_blank" title="GitHub">🐙</a>
+      <a href="https://x.com/c_y_p_h3r" target="_blank" title="X/Twitter">🐦</a>
+      <a href="mailto:ridhinofficial@gmail.com" title="Email">✉️</a>
     </div>
     <div class="hero-stats">
       <div class="stat"><div class="num">15+</div><div class="lbl">Exploit Tools</div></div>
-      <div class="stat"><div class="num">10</div><div class="lbl">Skill Kits</div></div>
       <div class="stat"><div class="num">10+</div><div class="lbl">CVE Scanners</div></div>
       <div class="stat"><div class="num">5+</div><div class="lbl">Bounty Programs</div></div>
     </div>
   </section>
 
   <section id="about">
-    <h2 class="sec-title">About Me</h2>
-    <p class="sec-sub">Background and what I do.</p>
+    <h2 class="sec-title">About <span class="purple">Me</span></h2>
+    <p class="sec-sub">Know Me Better</p>
     <div class="about-grid">
       <div class="about-text">
-        <p>I'm a <strong>bug bounty hunter</strong> and <strong>security researcher</strong> specializing in web application security, API testing, and exploit development.</p>
-        <p style="margin-top:14px;">I find vulnerabilities in real-world applications, build open-source exploit tools, and contribute to the security community. My work spans the full spectrum — from <strong>SQL injection</strong> and <strong>cross-site scripting</strong> to <strong>binary exploitation</strong> and <strong>cryptographic attacks</strong>.</p>
-        <p style="margin-top:14px;">Active on <strong>HackerOne</strong>, <strong>Hack The Box</strong>, and multiple bug bounty programs. Every tool I build is released publicly on GitHub with full documentation.</p>
+        <p>I'm a <strong>bug bounty hunter</strong> and <strong>security researcher</strong> specializing in web app security, API testing, and exploit development.</p>
+        <p style="margin-top:16px;">Finding vulns in real-world apps, building open-source tools, and sharing with the community. From <strong>SQL injection</strong> to <strong>binary exploitation</strong> — I cover the full security spectrum.</p>
+        <p style="margin-top:16px;">Active on <strong>HackerOne</strong>, <strong>Hack The Box</strong>, and multiple bounty programs. Every tool released publicly on GitHub.</p>
       </div>
       <div class="about-text">
-        <p><strong>Core Focus Areas:</strong></p>
-        <ul style="margin-top:8px;padding-left:18px;">
-          <li>Web application penetration testing</li>
-          <li>API & GraphQL security assessments</li>
-          <li>Exploit development & reverse engineering</li>
-          <li>Cloud infrastructure security (AWS, Azure, GCP)</li>
+        <p><strong>Focus Areas:</strong></p>
+        <ul>
+          <li>Web application & API security</li>
+          <li>Exploit development & tooling</li>
+          <li>Cloud infrastructure assessment</li>
           <li>Cryptographic attack analysis</li>
-          <li>Open-source security tooling</li>
+          <li>Reverse engineering & binary exploitation</li>
         </ul>
       </div>
     </div>
   </section>
 
   <section id="skills">
-    <h2 class="sec-title">Skills & Expertise</h2>
-    <p class="sec-sub">Technical proficiencies across security domains.</p>
+    <h2 class="sec-title">Professional <span class="purple">Skills</span></h2>
+    <p class="sec-sub">Technical Proficiencies</p>
     <div class="skills-grid">
       <div class="skill-group">
         <h3>Web Application</h3>
         <div class="skill-item" data-pct="95"><div class="name"><span>SQL Injection</span><span class="pct">95%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="90"><div class="name"><span>Cross-Site Scripting</span><span class="pct">90%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="90"><div class="name"><span>XSS</span><span class="pct">90%</span></div><div class="bar"><div class="fill"></div></div></div>
         <div class="skill-item" data-pct="88"><div class="name"><span>SSRF / SSTI / CMDi</span><span class="pct">88%</span></div><div class="bar"><div class="fill"></div></div></div>
         <div class="skill-item" data-pct="85"><div class="name"><span>IDOR / CSRF / JWT</span><span class="pct">85%</span></div><div class="bar"><div class="fill"></div></div></div>
         <div class="skill-tags"><span>SQLi</span><span>XSS</span><span>SSRF</span><span>SSTI</span><span>CMDi</span><span>IDOR</span><span>CSRF</span><span>JWT</span></div>
       </div>
       <div class="skill-group">
-        <h3>API & Infrastructure</h3>
+        <h3>Infrastructure</h3>
         <div class="skill-item" data-pct="92"><div class="name"><span>REST / GraphQL</span><span class="pct">92%</span></div><div class="bar"><div class="fill"></div></div></div>
         <div class="skill-item" data-pct="80"><div class="name"><span>Kubernetes / Docker</span><span class="pct">80%</span></div><div class="bar"><div class="fill"></div></div></div>
         <div class="skill-item" data-pct="78"><div class="name"><span>Cloud (AWS/Azure/GCP)</span><span class="pct">78%</span></div><div class="bar"><div class="fill"></div></div></div>
@@ -357,106 +381,169 @@
         <div class="skill-item" data-pct="85"><div class="name"><span>Binary Exploitation</span><span class="pct">85%</span></div><div class="bar"><div class="fill"></div></div></div>
         <div class="skill-item" data-pct="82"><div class="name"><span>ROP / Shellcode</span><span class="pct">82%</span></div><div class="bar"><div class="fill"></div></div></div>
         <div class="skill-item" data-pct="80"><div class="name"><span>Heap / Stack Overflow</span><span class="pct">80%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="75"><div class="name"><span>VM Reverse Engineering</span><span class="pct">75%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="75"><div class="name"><span>VM Reverse</span><span class="pct">75%</span></div><div class="bar"><div class="fill"></div></div></div>
         <div class="skill-tags"><span>ROP</span><span>Shellcode</span><span>Fuzzing</span><span>UAF</span><span>Format String</span></div>
       </div>
       <div class="skill-group">
         <h3>Crypto & OSINT</h3>
         <div class="skill-item" data-pct="85"><div class="name"><span>RSA / Hash Attacks</span><span class="pct">85%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="80"><div class="name"><span>Symmetric Cipher Attacks</span><span class="pct">80%</span></div><div class="bar"><div class="fill"></div></div></div>
-        <div class="skill-item" data-pct="72"><div class="name"><span>Lattice Cryptanalysis</span><span class="pct">72%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="80"><div class="name"><span>Symmetric Attacks</span><span class="pct">80%</span></div><div class="bar"><div class="fill"></div></div></div>
         <div class="skill-item" data-pct="88"><div class="name"><span>OSINT / Recon</span><span class="pct">88%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="72"><div class="name"><span>Lattice Crypto</span><span class="pct">72%</span></div><div class="bar"><div class="fill"></div></div></div>
         <div class="skill-tags"><span>RSA</span><span>Hash</span><span>Lattice</span><span>AES</span><span>OSINT</span><span>Recon</span></div>
       </div>
     </div>
   </section>
 
   <section id="tools">
-    <h2 class="sec-title">Tools & Projects</h2>
-    <p class="sec-sub">Open-source security tools — click any to view the README.</p>
-    <div class="filter-bar" id="filterBar">
+    <h2 class="sec-title">Open Source <span class="purple">Tools</span></h2>
+    <p class="sec-sub">Click any tool to view README</p>
+    <div class="filter-bar">
       <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="cve">CVE Scanners</button>
+      <button class="filter-btn" data-filter="cve">CVE</button>
       <button class="filter-btn" data-filter="web">Web</button>
       <button class="filter-btn" data-filter="api">API</button>
-      <button class="filter-btn" data-filter="infra">Infrastructure</button>
+      <button class="filter-btn" data-filter="infra">Infra</button>
       <button class="filter-btn" data-filter="exploit">Exploit</button>
       <button class="filter-btn" data-filter="other">Other</button>
     </div>
-    <div class="tools-grid" id="toolsGrid">
-      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="CVE-2026-9082/">CVE-2026-9082</a></h3><p>Drupal PostgreSQL SQLi — CISA KEV (May 2026)</p><div class="tool-meta"><span>Critical</span><span>Python</span><span>Mass Scanner</span></div></div>
-      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="CVE-2026-0300/">CVE-2026-0300</a></h3><p>PAN-OS Captive Portal Buffer Overflow RCE</p><div class="tool-meta"><span>Critical</span><span>CISA KEV</span></div></div>
-      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="CVE-2026-0073/">CVE-2026-0073</a></h3><p>Android ADB Authentication Bypass</p><div class="tool-meta"><span>Critical</span><span>CISA KEV</span></div></div>
-      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="CVE-2026-3854/">CVE-2026-3854</a></h3><p>GitHub Enterprise Server RCE</p><div class="tool-meta"><span>Critical</span></div></div>
-      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="CVE-2026-1731/">CVE-2026-1731</a></h3><p>BeyondTrust Pre-auth RCE</p><div class="tool-meta"><span>Critical</span></div></div>
-      <div class="tool-card" data-cat="cve"><h3><span class="cve-high">●</span> <a href="CVE-2025-34291/">CVE-2025-34291</a></h3><p>Langflow CORS Vulnerability Scanner</p><div class="tool-meta"><span>High</span></div></div>
-      <div class="tool-card" data-cat="web"><h3><a href="Web-Security-Toolkit/">Web-Security-Toolkit</a></h3><p>8 scanners: SQLi, XSS, SSRF, SSTI, CMDi, IDOR, CSRF, JWT</p><div class="tool-meta"><span>8 tools</span><span>Python</span></div></div>
-      <div class="tool-card" data-cat="api"><h3><a href="API-Security-Toolkit/">API-Security-Toolkit</a></h3><p>REST, GraphQL, WebSocket, gRPC vulnerability scanners</p><div class="tool-meta"><span>4 tools</span></div></div>
-      <div class="tool-card" data-cat="infra"><h3><a href="Infra-Security-Toolkit/">Infra-Security-Toolkit</a></h3><p>Linux, Windows, AD, K8s, Docker, Cloud scanners</p><div class="tool-meta"><span>6 tools</span></div></div>
-      <div class="tool-card" data-cat="other"><h3><a href="Crypto-Attack-Toolkit/">Crypto-Attack-Toolkit</a></h3><p>RSA, hash, lattice, symmetric cipher attack tools</p><div class="tool-meta"><span>4 tools</span></div></div>
-      <div class="tool-card" data-cat="exploit"><h3><a href="Exploit-Dev-Toolkit/">Exploit-Dev-Toolkit</a></h3><p>Fuzzer, payload generator, ROP builder, shellcode encoder</p><div class="tool-meta"><span>4 tools</span></div></div>
-      <div class="tool-card" data-cat="exploit"><h3><a href="Reversing-Toolkit/">Reversing-Toolkit</a></h3><p>Binary exploitation, heap attacks, VM reverse engineering</p><div class="tool-meta"><span>3 tools</span></div></div>
-      <div class="tool-card" data-cat="infra"><h3><a href="Cloud-Security-Toolkit/">Cloud-Security-Toolkit</a></h3><p>AWS, Azure, GCP, Terraform/CloudFormation scanners</p><div class="tool-meta"><span>4 tools</span></div></div>
-      <div class="tool-card" data-cat="other"><h3><a href="Mobile-Security-Toolkit/">Mobile-Security-Toolkit</a></h3><p>Android & iOS app security testing tools</p><div class="tool-meta"><span>2 tools</span></div></div>
-      <div class="tool-card" data-cat="other"><h3><a href="Wireless-Security-Toolkit/">Wireless-Security-Toolkit</a></h3><p>WiFi, Bluetooth/BLE, RFID/NFC testing</p><div class="tool-meta"><span>3 tools</span></div></div>
-      <div class="tool-card" data-cat="other"><h3><a href="OSINT-Toolkit/">OSINT-Toolkit</a></h3><p>Domain recon, email OSINT, social search, breach analysis</p><div class="tool-meta"><span>4 tools</span></div></div>
+    <div class="tools-grid">
+      <div class="tool-card" data-cat="cve"><h3><span class="cve-critical">●</span> <a href="CVE-2026-9082/">CVE-2026-9082</a></h3><p>Drupal PostgreSQL SQLi — CISA KEV</p><div class="tool-meta"><span>Critical</span><span>Python</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><a href="CVE-2026-0300/">CVE-2026-0300</a></h3><p>PAN-OS Captive Portal BOF RCE</p><div class="tool-meta"><span>Critical</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><a href="CVE-2026-0073/">CVE-2026-0073</a></h3><p>Android ADB Authentication Bypass</p><div class="tool-meta"><span>Critical</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><a href="CVE-2026-3854/">CVE-2026-3854</a></h3><p>GitHub Enterprise Server RCE</p><div class="tool-meta"><span>Critical</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><a href="CVE-2026-1731/">CVE-2026-1731</a></h3><p>BeyondTrust Pre-auth RCE</p><div class="tool-meta"><span>Critical</span></div></div>
+      <div class="tool-card" data-cat="cve"><h3><a href="CVE-2025-34291/">CVE-2025-34291</a></h3><p>Langflow CORS Vulnerability</p><div class="tool-meta"><span>High</span></div></div>
+      <div class="tool-card" data-cat="web"><h3><a href="Web-Security-Toolkit/">Web-Security-Toolkit</a></h3><p>8 scanners: SQLi, XSS, SSRF, SSTI, CMDi, IDOR, CSRF, JWT</p><div class="tool-meta"><span>8 tools</span></div></div>
+      <div class="tool-card" data-cat="api"><h3><a href="API-Security-Toolkit/">API-Security-Toolkit</a></h3><p>REST, GraphQL, WebSocket, gRPC scanners</p><div class="tool-meta"><span>4 tools</span></div></div>
+      <div class="tool-card" data-cat="infra"><h3><a href="Infra-Security-Toolkit/">Infra-Security-Toolkit</a></h3><p>Linux, AD, K8s, Docker, Cloud scanners</p><div class="tool-meta"><span>6 tools</span></div></div>
+      <div class="tool-card" data-cat="other"><h3><a href="Crypto-Attack-Toolkit/">Crypto-Attack-Toolkit</a></h3><p>RSA, hash, lattice, symmetric attacks</p><div class="tool-meta"><span>4 tools</span></div></div>
+      <div class="tool-card" data-cat="exploit"><h3><a href="Exploit-Dev-Toolkit/">Exploit-Dev-Toolkit</a></h3><p>Fuzzer, payloads, ROP, shellcode encoder</p><div class="tool-meta"><span>4 tools</span></div></div>
+      <div class="tool-card" data-cat="exploit"><h3><a href="Reversing-Toolkit/">Reversing-Toolkit</a></h3><p>Binary exploit, heap, VM reversing</p><div class="tool-meta"><span>3 tools</span></div></div>
+      <div class="tool-card" data-cat="infra"><h3><a href="Cloud-Security-Toolkit/">Cloud-Security-Toolkit</a></h3><p>AWS, Azure, GCP, IaC scanners</p><div class="tool-meta"><span>4 tools</span></div></div>
+      <div class="tool-card" data-cat="other"><h3><a href="OSINT-Toolkit/">OSINT-Toolkit</a></h3><p>Domain recon, email OSINT, breach check</p><div class="tool-meta"><span>4 tools</span></div></div>
+      <div class="tool-card" data-cat="other"><h3><a href="Mobile-Security-Toolkit/">Mobile-Security-Toolkit</a></h3><p>Android & iOS app testing</p><div class="tool-meta"><span>2 tools</span></div></div>
+      <div class="tool-card" data-cat="other"><h3><a href="Wireless-Security-Toolkit/">Wireless-Security-Toolkit</a></h3><p>WiFi, BLE, RFID/NFC testing</p><div class="tool-meta"><span>3 tools</span></div></div>
     </div>
   </section>
 
   <section id="timeline">
-    <h2 class="sec-title">Achievements</h2>
-    <p class="sec-sub">Recent milestones and contributions.</p>
+    <h2 class="sec-title">Recent <span class="purple">Achievements</span></h2>
+    <p class="sec-sub">Milestones & Contributions</p>
     <div class="timeline">
-      <div class="timeline-item"><div class="date">2026-05-22</div><div class="desc"><strong>CISA KEV</strong> — CVE-2026-9082 Drupal SQLi added to known exploited vulnerabilities catalog</div></div>
-      <div class="timeline-item"><div class="date">2026-05-22</div><div class="desc"><strong>Release</strong> — Launched 10+ open-source exploit tool repositories covering web, API, cloud, crypto, reversing, and wireless security</div></div>
-      <div class="timeline-item"><div class="date">2026-05-21</div><div class="desc"><strong>Release</strong> — Published CVE scanners for PAN-OS (CVE-2026-0300), ADBD (CVE-2026-0073), GHE (CVE-2026-3854), BeyondTrust (CVE-2026-1731), Langflow (CVE-2025-34291)</div></div>
-      <div class="timeline-item"><div class="date">2026-05-20</div><div class="desc"><strong>Open Source</strong> — Submitted SSE keepalive fix to antirez/ds4 (#222) — wall-clock timer for prefill stalls</div></div>
-      <div class="timeline-item"><div class="date">2026-05-04</div><div class="desc"><strong>CISA KEV</strong> — CVE-2026-0073 Android ADBD authentication bypass added to KEV catalog</div></div>
-      <div class="timeline-item"><div class="date">2026</div><div class="desc"><strong>CTF</strong> — Solved hardware TPM, Modbus, Casino, and Satellite challenges on Hack The Box</div></div>
-      <div class="timeline-item"><div class="date">2026</div><div class="desc"><strong>Hak5</strong> — Contributed MFA Fatigue + Telegram Exfiltration USB Rubber Ducky payloads</div></div>
+      <div class="timeline-item"><div class="date">MAY 22, 2026</div><div class="desc"><strong>CISA KEV</strong> — CVE-2026-9082 Drupal SQLi added to Known Exploited Vulnerabilities</div></div>
+      <div class="timeline-item"><div class="date">MAY 22, 2026</div><div class="desc"><strong>Release</strong> — Published 10+ exploit toolkits (Web, API, Infra, Crypto, Exploit, Cloud, OSINT, Mobile, Wireless, Reversing)</div></div>
+      <div class="timeline-item"><div class="date">MAY 21, 2026</div><div class="desc"><strong>Release</strong> — CVE scanners for PAN-OS, ADBD, GHE, BeyondTrust, Langflow</div></div>
+      <div class="timeline-item"><div class="date">MAY 20, 2026</div><div class="desc"><strong>Open Source</strong> — Submitted SSE keepalive fix to antirez/ds4 (#222)</div></div>
+      <div class="timeline-item"><div class="date">2026</div><div class="desc"><strong>CTF</strong> — Solved hardware TPM, Modbus, Casino, Satellite on Hack The Box</div></div>
+      <div class="timeline-item"><div class="date">2026</div><div class="desc"><strong>Hak5</strong> — Contributed MFA Fatigue + Telegram Exfil USB Rubber Ducky payloads</div></div>
     </div>
   </section>
 
   <section id="contact">
-    <h2 class="sec-title">Get In Touch</h2>
-    <p class="sec-sub">Open to collaboration on security research and bug bounty.</p>
+    <h2 class="sec-title">Get In <span class="purple">Touch</span></h2>
+    <p class="sec-sub">Open to collaboration</p>
     <div class="contact-grid">
-      <a class="contact-card" href="https://hackerone.com/realridhinofficia" target="_blank"><span class="icon">🔴</span><span class="lbl">HackerOne</span><span class="val">realridhinofficia</span></a>
-      <a class="contact-card" href="https://github.com/ridhinva" target="_blank"><span class="icon">🐙</span><span class="lbl">GitHub</span><span class="val">ridhinva</span></a>
-      <a class="contact-card" href="https://x.com/c_y_p_h3r" target="_blank"><span class="icon">🐦</span><span class="lbl">X / Twitter</span><span class="val">@c_y_p_h3r</span></a>
-      <a class="contact-card" href="mailto:ridhinofficial@gmail.com"><span class="icon">✉️</span><span class="lbl">Email</span><span class="val">ridhinofficial@gmail.com</span></a>
+      <a class="contact-card" href="https://hackerone.com/realridhinofficia" target="_blank">
+        <span class="icon">🔴</span><span class="lbl">HackerOne</span><span class="val">realridhinofficia</span>
+      </a>
+      <a class="contact-card" href="https://github.com/ridhinva" target="_blank">
+        <span class="icon">🐙</span><span class="lbl">GitHub</span><span class="val">ridhinva</span>
+      </a>
+      <a class="contact-card" href="https://x.com/c_y_p_h3r" target="_blank">
+        <span class="icon">🐦</span><span class="lbl">X / Twitter</span><span class="val">@c_y_p_h3r</span>
+      </a>
+      <a class="contact-card" href="mailto:ridhinofficial@gmail.com">
+        <span class="icon">✉️</span><span class="lbl">Email</span><span class="val">ridhinofficial@gmail.com</span>
+      </a>
     </div>
   </section>
 
-  <footer>© 2026 Ridhin V A. Built with care.</footer>
+  <footer>Built with <span class="purple">❤️</span> by <span class="purple">Ridhin V A</span> | © 2026</footer>
 
   <script>
-    // Theme toggle
-    const themeBtn = document.getElementById('themeToggle');
-    themeBtn.addEventListener('click', () => {
-      document.body.classList.toggle('dark');
-      themeBtn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
-      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
-    });
-    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme:dark)').matches)) {
-      document.body.classList.add('dark');
-      themeBtn.textContent = '☀️';
-    }
+    // ─── Particles ───
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let w, h;
+    function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
 
-    // Filter buttons
+    const count = 80;
+    const pts = [];
+    for (let i = 0; i < count; i++) {
+      pts.push({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4 });
+    }
+    function drawParticles() {
+      ctx.clearRect(0, 0, w, h);
+      for (let i = 0; i < pts.length; i++) {
+        pts[i].x += pts[i].vx; pts[i].y += pts[i].vy;
+        if (pts[i].x < 0 || pts[i].x > w) pts[i].vx *= -1;
+        if (pts[i].y < 0 || pts[i].y > h) pts[i].vy *= -1;
+        ctx.beginPath();
+        ctx.arc(pts[i].x, pts[i].y, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(199,112,240,0.3)';
+        ctx.fill();
+        for (let j = i + 1; j < pts.length; j++) {
+          const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 140) {
+            ctx.beginPath();
+            ctx.moveTo(pts[i].x, pts[i].y);
+            ctx.lineTo(pts[j].x, pts[j].y);
+            ctx.strokeStyle = `rgba(199,112,240,${0.15 * (1 - dist / 140)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(drawParticles);
+    }
+    drawParticles();
+
+    // ─── Navbar scroll ───
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ─── Typewriter ───
+    const lines = [
+      'Bug Bounty Hunter',
+      'Security Researcher',
+      'Exploit Developer',
+      'Open Source Contributor',
+    ];
+    let i = 0, j = 0, dir = 1;
+    const el = document.getElementById('typedText');
+    function type() {
+      const line = lines[i];
+      if (dir === 1) {
+        el.textContent = line.substring(0, j + 1);
+        j++;
+        if (j === line.length) { dir = 0; setTimeout(type, 1500); return; }
+      } else {
+        el.textContent = line.substring(0, j - 1);
+        j--;
+        if (j === 0) { dir = 1; i = (i + 1) % lines.length; }
+      }
+      setTimeout(type, dir === 1 ? 70 : 30);
+    }
+    type();
+
+    // ─── Filter ───
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const filter = btn.dataset.filter;
-        document.querySelectorAll('#toolsGrid .tool-card').forEach(card => {
-          card.style.display = filter === 'all' || card.dataset.cat === filter ? '' : 'none';
+        const f = btn.dataset.filter;
+        document.querySelectorAll('.tool-card').forEach(c => {
+          c.style.display = f === 'all' || c.dataset.cat === f ? '' : 'none';
         });
       });
     });
 
-    // Skill bars on scroll
-    const skillObs = new IntersectionObserver((entries) => {
+    // ─── Skill bars ───
+    const obs = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) {
           e.target.querySelectorAll('.fill').forEach(f => {
@@ -465,12 +552,7 @@
         }
       });
     }, { threshold: 0.2 });
-    document.querySelectorAll('.skill-group').forEach(el => skillObs.observe(el));
-
-    // Fade-in
-    new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-    }).observe(document.querySelector('.fade-in'));
+    document.querySelectorAll('.skill-group').forEach(el => obs.observe(el));
   </script>
 </body>
 </html>
