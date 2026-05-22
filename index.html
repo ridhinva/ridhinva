@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ridhin V | Bug Bounty Hunter</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Courier New", monospace;
+      background: #0a0a0a;
+      color: #00ff41;
+      overflow-x: hidden;
+    }
+    canvas#matrix {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+      opacity: 0.15;
+    }
+    nav {
+      position: fixed; top: 0; width: 100%;
+      background: rgba(10,10,10,0.9);
+      padding: 15px 20px;
+      display: flex; justify-content: center; gap: 30px;
+      z-index: 10;
+      border-bottom: 1px solid #00ff41;
+    }
+    nav a {
+      color: #00ff41; text-decoration: none; font-size: 13px;
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+    nav a:hover { color: #fff; text-shadow: 0 0 10px #00ff41; }
+    section {
+      position: relative; z-index: 1;
+      min-height: 100vh; padding: 120px 20px 60px;
+      max-width: 960px; margin: auto;
+    }
+    h1 { font-size: 48px; color: #00ff41; text-shadow: 0 0 20px #00ff41; }
+    h2 {
+      color: #00ff41; border-bottom: 1px solid #003300;
+      padding-bottom: 8px; margin: 40px 0 20px;
+      font-size: 20px; letter-spacing: 3px;
+    }
+    .terminal {
+      background: rgba(0,20,0,0.5);
+      border: 1px solid #00ff41;
+      padding: 20px; border-radius: 4px;
+      margin: 15px 0;
+    }
+    .terminal p { margin: 6px 0; }
+    .prompt::before { content: "$ "; color: #008800; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px; margin: 15px 0;
+    }
+    .card {
+      background: rgba(0,20,0,0.3);
+      border: 1px solid #003300;
+      padding: 16px; border-radius: 4px;
+      transition: all 0.3s;
+    }
+    .card:hover {
+      border-color: #00ff41;
+      box-shadow: 0 0 20px rgba(0,255,65,0.2);
+      transform: translateY(-4px);
+    }
+    .card h3 { color: #00ff41; font-size: 14px; margin-bottom: 8px; }
+    .card p { font-size: 12px; color: #008800; }
+    .card a { color: #00ff41; text-decoration: none; }
+    .card a:hover { text-decoration: underline; }
+    .badge {
+      display: inline-block;
+      background: #003300; color: #00ff41;
+      padding: 2px 8px; border-radius: 2px;
+      font-size: 11px; margin: 2px;
+    }
+    .severity-critical { background: #330000; color: #ff0000; }
+    .severity-high { background: #332200; color: #ff6600; }
+    footer {
+      text-align: center; padding: 30px;
+      color: #005500; font-size: 12px;
+    }
+    .blink { animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .stats {
+      display: flex; gap: 20px; flex-wrap: wrap; margin: 20px 0;
+    }
+    .stat {
+      flex: 1; min-width: 120px;
+      background: rgba(0,20,0,0.3);
+      border: 1px solid #003300;
+      padding: 15px; text-align: center;
+    }
+    .stat-num { font-size: 28px; color: #00ff41; }
+    .stat-label { font-size: 10px; color: #005500; text-transform: uppercase; letter-spacing: 1px; }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+  <nav>
+    <a href="#home">~# Home</a>
+    <a href="#tools">Tools</a>
+    <a href="#skills">Skills</a>
+    <a href="#achievements">Achievements</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <section id="home">
+    <h1>> Ridhin V A</h1>
+    <div class="terminal">
+      <p class="prompt">whoami</p>
+      <p>Bug Bounty Hunter | Security Researcher | Exploit Developer</p>
+      <p>&nbsp;</p>
+      <p class="prompt">cat /etc/status</p>
+      <p>Status: <span style="color:#00ff41">ACTIVE</span>  |  Hunting: 1win, 23andMe, Whatnot, Alsco</p>
+      <p>CTF: Hack The Box  |  Platform: HackerOne (realridhinofficia)</p>
+      <p>&nbsp;</p>
+      <p class="prompt">uname -a</p>
+      <p>Ridhin V A | Bug Bounty Hunter | <span class="blink">█</span></p>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num">7+</div>
+        <div class="stat-label">Exploit Tools Released</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">5</div>
+        <div class="stat-label">HTB Challenges</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">5+</div>
+        <div class="stat-label">Active Programs</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">2026</div>
+        <div class="stat-label">CISA KEV Tools</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tools">
+    <h2>// EXPLOIT TOOLS — May 2026</h2>
+    <div class="grid">
+      <div class="card">
+        <h3><span class="badge severity-critical">CRITICAL</span> CVE-2026-9082</h3>
+        <p>Drupal PostgreSQL SQLi — CISA KEV (May 22)</p>
+        <p><a href="https://github.com/ridhinva/CVE-2026-9082">github.com/ridhinva/CVE-2026-9082</a></p>
+      </div>
+      <div class="card">
+        <h3><span class="badge severity-critical">CRITICAL</span> CVE-2026-0300</h3>
+        <p>PAN-OS Captive Portal BOF RCE</p>
+        <p><a href="https://github.com/ridhinva/CVE-2026-0300-PANOS-RCE">github.com/ridhinva/CVE-2026-0300-PANOS-RCE</a></p>
+      </div>
+      <div class="card">
+        <h3><span class="badge severity-critical">CRITICAL</span> CVE-2026-0073</h3>
+        <p>Android ADB Authentication Bypass</p>
+        <p><a href="https://github.com/ridhinva/CVE-2026-0073-ADBD-Bypass">github.com/ridhinva/CVE-2026-0073-ADBD-Bypass</a></p>
+      </div>
+      <div class="card">
+        <h3><span class="badge severity-critical">CRITICAL</span> CVE-2026-3854</h3>
+        <p>GitHub Enterprise Server RCE</p>
+        <p><a href="https://github.com/ridhinva/CVE-2026-3854-GHE-RCE">github.com/ridhinva/CVE-2026-3854-GHE-RCE</a></p>
+      </div>
+      <div class="card">
+        <h3><span class="badge severity-critical">CRITICAL</span> CVE-2026-1731</h3>
+        <p>BeyondTrust Pre-auth RCE</p>
+        <p><a href="https://github.com/ridhinva/CVE-2026-1731-BeyondTrust-RCE">github.com/ridhinva/CVE-2026-1731-BeyondTrust-RCE</a></p>
+      </div>
+      <div class="card">
+        <h3><span class="badge severity-high">HIGH</span> CVE-2025-34291</h3>
+        <p>Langflow CORS Vulnerability Scanner</p>
+        <p><a href="https://github.com/ridhinva/CVE-2025-34291-Langflow-Scanner">github.com/ridhinva/CVE-2025-34291-Langflow-Scanner</a></p>
+      </div>
+      <div class="card">
+        <h3><span class="badge">TOOL</span> TwitterScraper</h3>
+        <p>Search tweets without API keys</p>
+        <p><a href="https://github.com/ridhinva/TwitterScraper">github.com/ridhinva/TwitterScraper</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <h2>// SKILL_MAP</h2>
+    <div class="terminal">
+      <p><span style="color:#005500">web_exploit</span>       ████████████████████ SQLi, XSS, SSRF, SSTI, CMDi, IDOR, CSRF, JWT</p>
+      <p><span style="color:#005500">api_security</span>       ████████████████████ REST API, GraphQL, OAuth, JWT attacks</p>
+      <p><span style="color:#005500">network_pentest</span>    ████████████████████ Nmap, Burp, Metasploit, Wireshark</p>
+      <p><span style="color:#005500">exploit_dev</span>        ████████████████████ Python, Bash, PoC crafting</p>
+      <p><span style="color:#005500">reverse_engineering</span> ████████████████████ Binary analysis, VM reversing</p>
+      <p><span style="color:#005500">crypto_attacks</span>     ████████████████████ RSA, hash, lattice, symmetric</p>
+      <p><span style="color:#005500">ctf_challenges</span>     ████████████████████ HTB: TPM, Modbus, Casino, Satellite</p>
+    </div>
+  </section>
+
+  <section id="achievements">
+    <h2>// ACHIEVEMENT_UNLOCKED</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>🏆 HTB TPM Challenge</h3>
+        <p>Flag: HTB{4_7yp1c41_53cu23_TPM_ch1p}</p>
+      </div>
+      <div class="card">
+        <h3>🏆 HTB Modbus</h3>
+        <p>Flag: HTB{50m371m35_cu570m_p2070c01_423_n07_3n0u9h7}</p>
+      </div>
+      <div class="card">
+        <h3>🏆 HTB Casino</h3>
+        <p>Flag: HTB{r4nd_1s_v3ry_pr3d1ct4bl3}</p>
+      </div>
+      <div class="card">
+        <h3>🏆 HTB Satellite</h3>
+        <p>Password: SAT_PROD_ENVIRONMENT</p>
+      </div>
+      <div class="card">
+        <h3>📄 HackerOne Report</h3>
+        <p>1win OAuth Redirect (#3752046)</p>
+      </div>
+      <div class="card">
+        <h3>🔌 USB Rubber Ducky</h3>
+        <p>MFA Fatigue + Telegram Exfil payloads submitted to Hak5</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>// CONTACT</h2>
+    <div class="terminal">
+      <p class="prompt">cat .contacts</p>
+      <p>HackerOne:  <a href="https://hackerone.com/realridhinofficia" style="color:#00ff41">realridhinofficia</a></p>
+      <p>X/Twitter:  <a href="https://x.com/c_y_p_h3r" style="color:#00ff41">@c_y_p_h3r</a></p>
+      <p>GitHub:     <a href="https://github.com/ridhinva" style="color:#00ff41">ridhinva</a></p>
+      <p>Email:      ridhinofficial@gmail.com</p>
+    </div>
+    <div class="terminal" style="margin-top:20px; text-align:center;">
+      <p style="font-size: 11px; color: #005500;">
+        [STATUS: ACTIVE]  |  HUNTING: 1win, 23andMe, Whatnot, Alsco  |  LOADING NEXT VULN...
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    > SYSTEM: ridhinva.github.io  |  © 2026  |  root@ridhinva:~# _
+  </footer>
+
+  <script>
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const chars = '0101010101010101CVE20269082EXPLOITPWNEDHACKEDROOT';
+    const fontSize = 12;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    function draw() {
+      ctx.fillStyle = 'rgba(10, 10, 10, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#00ff41';
+      ctx.font = fontSize + 'px monospace';
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(draw, 40);
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
