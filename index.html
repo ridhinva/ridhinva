@@ -3,247 +3,669 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ridhin V | Bug Bounty Hunter</title>
+  <title>Ridhin V A | Bug Bounty Hunter</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: "Courier New", monospace;
-      background: #0a0a0a;
-      color: #00ff41;
-      overflow-x: hidden;
+    :root {
+      --neon: #00ff41;
+      --dark: #0a0a0a;
+      --dim: #003300;
+      --gray: #005500;
     }
-    canvas#matrix {
-      position: fixed;
-      top: 0; left: 0;
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Courier New', monospace;
+      background: var(--dark);
+      color: var(--neon);
+      overflow-x: hidden;
+      line-height: 1.6;
+      perspective: 1200px;
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: var(--dim); border-radius: 3px; }
+    ::selection { background: var(--neon); color: var(--dark); }
+
+    /* 3D Particle Canvas */
+    canvas#particle3d {
+      position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
       z-index: -1;
-      opacity: 0.15;
     }
+
     nav {
       position: fixed; top: 0; width: 100%;
-      background: rgba(10,10,10,0.9);
+      background: rgba(10,10,10,0.85);
       padding: 15px 20px;
-      display: flex; justify-content: center; gap: 30px;
-      z-index: 10;
-      border-bottom: 1px solid #00ff41;
+      display: flex; justify-content: center; gap: 25px;
+      z-index: 100;
+      border-bottom: 1px solid var(--dim);
+      backdrop-filter: blur(12px);
+      transform-style: preserve-3d;
     }
     nav a {
-      color: #00ff41; text-decoration: none; font-size: 13px;
+      color: var(--neon); text-decoration: none; font-size: 12px;
       letter-spacing: 2px; text-transform: uppercase;
+      transition: all 0.3s; position: relative;
     }
-    nav a:hover { color: #fff; text-shadow: 0 0 10px #00ff41; }
+    nav a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px; background: var(--neon);
+      transition: width 0.3s;
+    }
+    nav a:hover::after { width: 100%; }
+    nav a:hover { color: #fff; text-shadow: 0 0 15px var(--neon); transform: translateZ(20px); }
+
     section {
       position: relative; z-index: 1;
-      min-height: 100vh; padding: 120px 20px 60px;
-      max-width: 960px; margin: auto;
+      min-height: 100vh; padding: 100px 20px 60px;
+      max-width: 1000px; margin: auto;
+      transform-style: preserve-3d;
     }
-    h1 { font-size: 48px; color: #00ff41; text-shadow: 0 0 20px #00ff41; }
-    h2 {
-      color: #00ff41; border-bottom: 1px solid #003300;
-      padding-bottom: 8px; margin: 40px 0 20px;
-      font-size: 20px; letter-spacing: 3px;
+
+    /* ─── Hero ─── */
+    #home {
+      display: flex; flex-direction: column;
+      justify-content: center; min-height: 100vh;
+      align-items: center; text-align: center;
     }
-    .terminal {
-      background: rgba(0,20,0,0.5);
-      border: 1px solid #00ff41;
-      padding: 20px; border-radius: 4px;
-      margin: 15px 0;
-    }
-    .terminal p { margin: 6px 0; }
-    .prompt::before { content: "$ "; color: #008800; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 15px; margin: 15px 0;
-    }
-    .card {
-      background: rgba(0,20,0,0.3);
-      border: 1px solid #003300;
-      padding: 16px; border-radius: 4px;
-      transition: all 0.3s;
-    }
-    .card:hover {
-      border-color: #00ff41;
-      box-shadow: 0 0 20px rgba(0,255,65,0.2);
-      transform: translateY(-4px);
-    }
-    .card h3 { color: #00ff41; font-size: 14px; margin-bottom: 8px; }
-    .card p { font-size: 12px; color: #008800; }
-    .card a { color: #00ff41; text-decoration: none; }
-    .card a:hover { text-decoration: underline; }
-    .badge {
+    .hero-badge {
       display: inline-block;
-      background: #003300; color: #00ff41;
-      padding: 2px 8px; border-radius: 2px;
-      font-size: 11px; margin: 2px;
+      border: 1px solid var(--neon);
+      padding: 5px 16px; font-size: 11px;
+      letter-spacing: 4px; margin-bottom: 25px;
+      opacity: 0.7;
+      animation: badgePulse 3s ease-in-out infinite;
     }
-    .severity-critical { background: #330000; color: #ff0000; }
-    .severity-high { background: #332200; color: #ff6600; }
-    footer {
-      text-align: center; padding: 30px;
-      color: #005500; font-size: 12px;
+    @keyframes badgePulse {
+      0%,100% { opacity: 0.7; box-shadow: 0 0 0 transparent; }
+      50% { opacity: 1; box-shadow: 0 0 20px rgba(0,255,65,0.3); }
     }
-    .blink { animation: blink 1s step-end infinite; }
+    h1 {
+      font-size: clamp(42px, 7vw, 72px);
+      color: var(--neon);
+      text-shadow: 0 0 40px var(--neon);
+      margin-bottom: 8px;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+    @keyframes titleGlow {
+      0% { text-shadow: 0 0 20px var(--neon), 0 0 40px rgba(0,255,65,0.3); }
+      100% { text-shadow: 0 0 40px var(--neon), 0 0 80px rgba(0,255,65,0.5), 0 0 120px rgba(0,255,65,0.2); }
+    }
+
+    .typewriter {
+      font-size: clamp(14px, 2vw, 20px);
+      color: var(--neon); opacity: 0.85;
+      min-height: 1.5em;
+      margin-bottom: 8px;
+    }
+    .typewriter .cursor {
+      animation: blink 0.7s step-end infinite;
+    }
     @keyframes blink { 50% { opacity: 0; } }
-    .stats {
-      display: flex; gap: 20px; flex-wrap: wrap; margin: 20px 0;
+
+    .hero-3d-box {
+      display: inline-block;
+      margin: 30px auto 25px;
+      width: 120px; height: 120px;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: rotate3d 8s linear infinite;
     }
-    .stat {
-      flex: 1; min-width: 120px;
-      background: rgba(0,20,0,0.3);
-      border: 1px solid #003300;
-      padding: 15px; text-align: center;
+    @keyframes rotate3d {
+      0% { transform: rotateX(-15deg) rotateY(0deg); }
+      100% { transform: rotateX(-15deg) rotateY(360deg); }
     }
-    .stat-num { font-size: 28px; color: #00ff41; }
-    .stat-label { font-size: 10px; color: #005500; text-transform: uppercase; letter-spacing: 1px; }
+    .hero-3d-box .face {
+      position: absolute;
+      width: 120px; height: 120px;
+      border: 2px solid var(--neon);
+      background: rgba(0,255,65,0.03);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .hero-3d-box .front  { transform: translateZ(60px); }
+    .hero-3d-box .back   { transform: rotateY(180deg) translateZ(60px); }
+    .hero-3d-box .left   { transform: rotateY(-90deg) translateZ(60px); }
+    .hero-3d-box .right  { transform: rotateY(90deg) translateZ(60px); }
+    .hero-3d-box .top    { transform: rotateX(90deg) translateZ(60px); }
+    .hero-3d-box .bottom { transform: rotateX(-90deg) translateZ(60px); }
+
+    .hero-links {
+      display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 20px;
+    }
+    .hero-links a {
+      color: var(--neon); text-decoration: none;
+      border: 1px solid var(--dim); padding: 10px 22px;
+      font-size: 12px; letter-spacing: 1px;
+      transition: all 0.4s; position: relative;
+      overflow: hidden;
+    }
+    .hero-links a::before {
+      content: ''; position: absolute; top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,65,0.1), transparent);
+      transition: left 0.5s;
+    }
+    .hero-links a:hover::before { left: 100%; }
+    .hero-links a:hover {
+      border-color: var(--neon);
+      box-shadow: 0 0 25px rgba(0,255,65,0.3), inset 0 0 25px rgba(0,255,65,0.05);
+      transform: translateY(-3px) scale(1.03);
+    }
+
+    /* ─── Section Title ─── */
+    .section-title {
+      font-size: 14px; letter-spacing: 4px;
+      color: var(--gray); margin-bottom: 30px;
+      padding-bottom: 12px;
+      position: relative;
+    }
+    .section-title::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 60px; height: 1px; background: var(--neon);
+      animation: titleLine 2s ease-out forwards;
+    }
+    @keyframes titleLine {
+      0% { width: 0; }
+      100% { width: 60px; }
+    }
+    .section-title span { color: var(--neon); }
+
+    /* ─── About ─── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 35px; margin-top: 20px;
+    }
+    @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; } }
+    .about-text { font-size: 14px; line-height: 1.9; opacity: 0.85; }
+    .about-text .hl { color: var(--neon); opacity: 1; font-weight: bold; }
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    .stat-card {
+      border: 1px solid var(--dim);
+      padding: 24px; text-align: center;
+      transition: all 0.5s;
+      transform-style: preserve-3d;
+      cursor: default;
+    }
+    .stat-card:hover {
+      border-color: var(--neon);
+      box-shadow: 0 0 30px rgba(0,255,65,0.2), 0 15px 40px rgba(0,0,0,0.5);
+      transform: translateZ(30px) rotateX(-2deg) rotateY(2deg);
+    }
+    .stat-num { font-size: 36px; font-weight: bold; }
+    .stat-lbl { font-size: 10px; color: var(--gray); letter-spacing: 2px; margin-top: 6px; }
+
+    /* ─── Skills ─── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px; margin-top: 20px;
+    }
+    @media (max-width: 768px) { .skills-grid { grid-template-columns: 1fr; } }
+    .skill-group {
+      border: 1px solid var(--dim);
+      padding: 22px; transition: all 0.5s;
+      transform-style: preserve-3d;
+    }
+    .skill-group:hover {
+      border-color: var(--neon);
+      box-shadow: 0 0 30px rgba(0,255,65,0.15);
+      transform: translateZ(20px) rotateX(-1deg);
+    }
+    .skill-group h3 {
+      font-size: 11px; letter-spacing: 2px;
+      color: var(--gray); margin-bottom: 15px;
+    }
+    .skill-item { margin-bottom: 12px; }
+    .skill-item .name {
+      display: flex; justify-content: space-between;
+      font-size: 12px; margin-bottom: 5px;
+    }
+    .skill-item .bar {
+      height: 5px; background: rgba(0,255,65,0.08);
+      border-radius: 3px; overflow: hidden;
+    }
+    .skill-item .fill {
+      height: 100%; background: linear-gradient(90deg, var(--neon), #66ff99);
+      border-radius: 3px; width: 0;
+      transition: width 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 0 6px var(--neon);
+    }
+    .skill-group:hover .fill { box-shadow: 0 0 12px var(--neon); }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+    .skill-tags span {
+      background: rgba(0,255,65,0.06);
+      border: 1px solid var(--dim);
+      padding: 3px 10px; font-size: 10px;
+      letter-spacing: 1px; transition: all 0.3s;
+    }
+    .skill-tags span:hover {
+      border-color: var(--neon);
+      background: rgba(0,255,65,0.12);
+      transform: translateY(-2px);
+    }
+
+    /* ─── Repos ─── */
+    .repos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 18px; margin-top: 20px;
+    }
+    .repo-card {
+      border: 1px solid var(--dim);
+      padding: 20px; transition: all 0.5s;
+      position: relative; overflow: hidden;
+      transform-style: preserve-3d;
+    }
+    .repo-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 3px; height: 0; background: var(--neon);
+      transition: height 0.5s ease;
+    }
+    .repo-card::after {
+      content: ''; position: absolute; top: -50%; right: -50%;
+      width: 100%; height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(0,255,65,0.02), transparent);
+      transform: rotate(45deg);
+      transition: all 0.8s;
+    }
+    .repo-card:hover::after { right: 100%; }
+    .repo-card:hover::before { height: 100%; }
+    .repo-card:hover {
+      border-color: var(--neon);
+      box-shadow: 0 0 30px rgba(0,255,65,0.12), 0 20px 60px rgba(0,0,0,0.4);
+      transform: translateZ(25px) rotateX(-1deg) rotateY(1deg);
+    }
+    .repo-card h3 { font-size: 13px; margin-bottom: 6px; }
+    .repo-card h3 a { color: var(--neon); text-decoration: none; }
+    .repo-card h3 a:hover { text-decoration: underline; }
+    .repo-card p { font-size: 11px; color: var(--gray); margin-bottom: 8px; }
+    .repo-meta { display: flex; gap: 12px; font-size: 10px; color: var(--gray); }
+    .severity-critical { color: #ff3333; text-shadow: 0 0 8px rgba(255,51,51,0.5); }
+    .severity-high { color: #ff8800; }
+
+    /* ─── Contact ─── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px; margin-top: 20px;
+    }
+    .contact-card {
+      border: 1px solid var(--dim);
+      padding: 30px 20px; text-align: center;
+      transition: all 0.5s; text-decoration: none; color: var(--neon);
+      display: block; transform-style: preserve-3d;
+      position: relative; overflow: hidden;
+    }
+    .contact-card::before {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 100%; height: 0;
+      background: linear-gradient(to top, rgba(0,255,65,0.05), transparent);
+      transition: height 0.4s;
+    }
+    .contact-card:hover::before { height: 100%; }
+    .contact-card:hover {
+      border-color: var(--neon);
+      box-shadow: 0 0 30px rgba(0,255,65,0.2);
+      transform: translateZ(35px) rotateX(-2deg) rotateY(2deg);
+    }
+    .contact-card .icon { font-size: 32px; margin-bottom: 10px; display: block; }
+    .contact-card .label { font-size: 10px; color: var(--gray); letter-spacing: 2px; }
+    .contact-card .value { font-size: 14px; margin-top: 6px; font-weight: bold; }
+
+    footer {
+      text-align: center; padding: 40px 20px;
+      color: var(--gray); font-size: 11px;
+      border-top: 1px solid var(--dim);
+    }
+
+    /* ─── Animations ─── */
+    .fade-in {
+      opacity: 0; transform: translateY(40px) translateZ(-20px);
+      transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0) translateZ(0); }
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+    .delay-4 { transition-delay: 0.4s; }
+
+    /* Floating particles */
+    .float-particle {
+      position: fixed; pointer-events: none;
+      font-size: 8px; color: var(--neon);
+      opacity: 0.1; z-index: 0;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.12; }
+      90% { opacity: 0.12; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Scanline overlay */
+    .scanlines {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none; z-index: 9999;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,255,65,0.015) 2px,
+        rgba(0,255,65,0.015) 4px
+      );
+    }
   </style>
 </head>
 <body>
-  <canvas id="matrix"></canvas>
+  <canvas id="particle3d"></canvas>
+  <div class="scanlines"></div>
+
+  <!-- Floating particles -->
+  <div id="floatContainer"></div>
+
   <nav>
-    <a href="#home">~# Home</a>
-    <a href="#tools">Tools</a>
+    <a href="#home">~Home</a>
+    <a href="#about">About</a>
     <a href="#skills">Skills</a>
-    <a href="#achievements">Achievements</a>
+    <a href="#repos">Repos</a>
     <a href="#contact">Contact</a>
   </nav>
 
   <section id="home">
-    <h1>> Ridhin V A</h1>
-    <div class="terminal">
-      <p class="prompt">whoami</p>
-      <p>Bug Bounty Hunter | Security Researcher | Exploit Developer</p>
-      <p>&nbsp;</p>
-      <p class="prompt">cat /etc/status</p>
-      <p>Status: <span style="color:#00ff41">ACTIVE</span></p>
-      <p>Platform: HackerOne (realridhinofficia)</p>
-      <p>&nbsp;</p>
-      <p class="prompt">uname -a</p>
-      <p>Ridhin V A | Bug Bounty Hunter | <span class="blink">█</span></p>
+    <div class="hero-badge">SECURITY RESEARCHER // BUG BOUNTY</div>
+    <h1>Ridhin V A</h1>
+    <div class="typewriter" id="typewriter">
+      <span id="typedText"></span><span class="cursor">█</span>
     </div>
-
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-num">7+</div>
-        <div class="stat-label">Exploit Tools Released</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">5</div>
-        <div class="stat-label">HTB Challenges</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">5+</div>
-        <div class="stat-label">Active Programs</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">2026</div>
-        <div class="stat-label">CISA KEV Tools</div>
-      </div>
+    <div class="hero-3d-box">
+      <div class="face front">>_</div>
+      <div class="face back">ROOT</div>
+      <div class="face left">PWN</div>
+      <div class="face right">HACK</div>
+      <div class="face top">0x01</div>
+      <div class="face bottom">NULL</div>
+    </div>
+    <div class="hero-links">
+      <a href="https://hackerone.com/realridhinofficia" target="_blank">HackerOne</a>
+      <a href="https://github.com/ridhinva" target="_blank">GitHub</a>
+      <a href="https://x.com/c_y_p_h3r" target="_blank">X/Twitter</a>
+      <a href="#contact">Contact</a>
     </div>
   </section>
 
-  <section id="tools">
-    <h2>// EXPLOIT TOOLS — May 2026</h2>
-    <div class="grid">
-      <div class="card">
-        <h3><span class="badge severity-critical">CRITICAL</span> CVE-2026-9082</h3>
-        <p>Drupal PostgreSQL SQLi — CISA KEV (May 22)</p>
-        <p><a href="https://github.com/ridhinva/CVE-2026-9082">github.com/ridhinva/CVE-2026-9082</a></p>
+  <section id="about">
+    <h2 class="section-title"><span>//</span> ABOUT_ME</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I'm a <span class="hl">bug bounty hunter</span> and <span class="hl">security researcher</span> specializing in web app security, API testing, and exploit dev.</p>
+        <p style="margin-top:14px;">Finding vulns in real-world apps, building tools, and sharing with the community. From <span class="hl">SQLi</span> and <span class="hl">XSS</span> to <span class="hl">binary exploitation</span> and <span class="hl">crypto attacks</span> — I cover the full spectrum.</p>
+        <p style="margin-top:14px;">Active on <span class="hl">HackerOne</span>, <span class="hl">Hack The Box</span>, and multiple bounty programs.</p>
       </div>
-      <div class="card">
-        <h3><span class="badge severity-critical">CRITICAL</span> CVE-2026-0300</h3>
-        <p>PAN-OS Captive Portal BOF RCE</p>
-        <p><a href="https://github.com/ridhinva/CVE-2026-0300-PANOS-RCE">github.com/ridhinva/CVE-2026-0300-PANOS-RCE</a></p>
-      </div>
-      <div class="card">
-        <h3><span class="badge severity-critical">CRITICAL</span> CVE-2026-0073</h3>
-        <p>Android ADB Authentication Bypass</p>
-        <p><a href="https://github.com/ridhinva/CVE-2026-0073-ADBD-Bypass">github.com/ridhinva/CVE-2026-0073-ADBD-Bypass</a></p>
-      </div>
-      <div class="card">
-        <h3><span class="badge severity-critical">CRITICAL</span> CVE-2026-3854</h3>
-        <p>GitHub Enterprise Server RCE</p>
-        <p><a href="https://github.com/ridhinva/CVE-2026-3854-GHE-RCE">github.com/ridhinva/CVE-2026-3854-GHE-RCE</a></p>
-      </div>
-      <div class="card">
-        <h3><span class="badge severity-critical">CRITICAL</span> CVE-2026-1731</h3>
-        <p>BeyondTrust Pre-auth RCE</p>
-        <p><a href="https://github.com/ridhinva/CVE-2026-1731-BeyondTrust-RCE">github.com/ridhinva/CVE-2026-1731-BeyondTrust-RCE</a></p>
-      </div>
-      <div class="card">
-        <h3><span class="badge severity-high">HIGH</span> CVE-2025-34291</h3>
-        <p>Langflow CORS Vulnerability Scanner</p>
-        <p><a href="https://github.com/ridhinva/CVE-2025-34291-Langflow-Scanner">github.com/ridhinva/CVE-2025-34291-Langflow-Scanner</a></p>
-      </div>
-      <div class="card">
-        <h3><span class="badge">TOOL</span> TwitterScraper</h3>
-        <p>Search tweets without API keys</p>
-        <p><a href="https://github.com/ridhinva/TwitterScraper">github.com/ridhinva/TwitterScraper</a></p>
+      <div class="about-stats">
+        <div class="stat-card" data-tilt><div class="stat-num">15+</div><div class="stat-lbl">Exploit Tools</div></div>
+        <div class="stat-card" data-tilt><div class="stat-num">10</div><div class="stat-lbl">Skill Toolkits</div></div>
+        <div class="stat-card" data-tilt><div class="stat-num">10+</div><div class="stat-lbl">CVE Scanners</div></div>
+        <div class="stat-card" data-tilt><div class="stat-num">5+</div><div class="stat-lbl">Bounty Programs</div></div>
       </div>
     </div>
   </section>
 
   <section id="skills">
-    <h2>// SKILL_MAP</h2>
-    <div class="terminal">
-      <p><span style="color:#005500">web_exploit</span>       ████████████████████ SQLi, XSS, SSRF, SSTI, CMDi, IDOR, CSRF, JWT</p>
-      <p><span style="color:#005500">api_security</span>       ████████████████████ REST API, GraphQL, OAuth, JWT attacks</p>
-      <p><span style="color:#005500">network_pentest</span>    ████████████████████ Nmap, Burp, Metasploit, Wireshark</p>
-      <p><span style="color:#005500">exploit_dev</span>        ████████████████████ Python, Bash, PoC crafting</p>
-      <p><span style="color:#005500">reverse_engineering</span> ████████████████████ Binary analysis, VM reversing</p>
-      <p><span style="color:#005500">crypto_attacks</span>     ████████████████████ RSA, hash, lattice, symmetric</p>
-      <p><span style="color:#005500">ctf_challenges</span>     ████████████████████ HTB: TPM, Modbus, Casino, Satellite</p>
+    <h2 class="section-title"><span>//</span> SKILL_MAP</h2>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <h3>WEB APPLICATION</h3>
+        <div class="skill-item" data-pct="95"><div class="name"><span>SQL Injection</span><span>95%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="90"><div class="name"><span>XSS</span><span>90%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="88"><div class="name"><span>SSRF / SSTI / CMDi</span><span>88%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="85"><div class="name"><span>IDOR / CSRF / JWT</span><span>85%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-tags"><span>SQLi</span><span>XSS</span><span>SSRF</span><span>SSTI</span><span>CMDi</span><span>IDOR</span><span>CSRF</span><span>JWT</span></div>
+      </div>
+      <div class="skill-group">
+        <h3>API & INFRASTRUCTURE</h3>
+        <div class="skill-item" data-pct="92"><div class="name"><span>REST / GraphQL</span><span>92%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="80"><div class="name"><span>K8s / Docker</span><span>80%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="78"><div class="name"><span>Cloud (AWS/Azure/GCP)</span><span>78%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="75"><div class="name"><span>AD / Windows</span><span>75%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-tags"><span>REST</span><span>GraphQL</span><span>K8s</span><span>Docker</span><span>AWS</span><span>Azure</span><span>AD</span></div>
+      </div>
+      <div class="skill-group">
+        <h3>EXPLOIT & REVERSING</h3>
+        <div class="skill-item" data-pct="85"><div class="name"><span>Binary Exploitation</span><span>85%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="82"><div class="name"><span>ROP / Shellcode</span><span>82%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="80"><div class="name"><span>Heap / Stack Overflow</span><span>80%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="75"><div class="name"><span>VM Reverse</span><span>75%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-tags"><span>ROP</span><span>Shellcode</span><span>Fuzzing</span><span>UAF</span><span>Format String</span></div>
+      </div>
+      <div class="skill-group">
+        <h3>CRYPTO & OSINT</h3>
+        <div class="skill-item" data-pct="85"><div class="name"><span>RSA / Hash Attacks</span><span>85%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="80"><div class="name"><span>Symmetric Attacks</span><span>80%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="72"><div class="name"><span>Lattice Crypto</span><span>72%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-item" data-pct="88"><div class="name"><span>OSINT / Domain Recon</span><span>88%</span></div><div class="bar"><div class="fill"></div></div></div>
+        <div class="skill-tags"><span>RSA</span><span>Hash</span><span>Lattice</span><span>AES</span><span>OSINT</span><span>Recon</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="repos">
+    <h2 class="section-title"><span>//</span> EXPLOIT_TOOLS</h2>
+    <p style="font-size:12px;color:var(--gray);margin-bottom:20px;">Open-source tools with full install, usage, and methodology docs on GitHub.</p>
+    <div class="repos-grid">
+      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Web-Security-Toolkit" target="_blank">Web-Security-Toolkit</a></h3><p>8 vuln scanners — SQLi, XSS, SSRF, SSTI, CMDi, IDOR, CSRF, JWT</p><div class="repo-meta"><span>⭐ 8 tools</span><span>🐍 Python</span></div></div>
+      <div class="repo-card"><h3><a href="https://github.com/ridhinva/API-Security-Toolkit" target="_blank">API-Security-Toolkit</a></h3><p>REST, GraphQL, WebSocket, gRPC vulnerability scanners</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
+      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Infra-Security-Toolkit" target="_blank">Infra-Security-Toolkit</a></h3><p>Linux, Windows, AD, K8s, Docker, Cloud scanners</p><div class="repo-meta"><span>⭐ 6 tools</span></div></div>
+      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Crypto-Attack-Toolkit" target="_blank">Crypto-Attack-Toolkit</a></h3><p>RSA, hash, lattice, symmetric cipher attack tools</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
+      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Exploit-Dev-Toolkit" target="_blank">Exploit-Dev-Toolkit</a></h3><p>Fuzzer, payload generator, ROP builder, shellcode encoder</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
+      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Reversing-Toolkit" target="_blank">Reversing-Toolkit</a></h3><p>Binary exploitation, heap attacks, VM reverse engineering</p><div class="repo-meta"><span>⭐ 3 tools</span></div></div>
+      <div class="repo-card"><h3><a href="https://github.com/ridhinva/OSINT-Toolkit" target="_blank">OSINT-Toolkit</a></h3><p>Domain recon, email OSINT, social search, breach analysis</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
+      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Cloud-Security-Toolkit" target="_blank">Cloud-Security-Toolkit</a></h3><p>AWS, Azure, GCP, IaC security scanners</p><div class="repo-meta"><span>⭐ 4 tools</span></div></div>
+      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Mobile-Security-Toolkit" target="_blank">Mobile-Security-Toolkit</a></h3><p>Android & iOS app security testing</p><div class="repo-meta"><span>⭐ 2 tools</span></div></div>
+      <div class="repo-card"><h3><a href="https://github.com/ridhinva/Wireless-Security-Toolkit" target="_blank">Wireless-Security-Toolkit</a></h3><p>WiFi, Bluetooth/BLE, RFID/NFC security testing</p><div class="repo-meta"><span>⭐ 3 tools</span></div></div>
+      <div class="repo-card"><h3><span class="severity-critical">●</span> <a href="https://github.com/ridhinva/CVE-2026-9082" target="_blank">CVE-2026-9082</a></h3><p>Drupal PostgreSQL SQLi — CISA KEV May 22</p><div class="repo-meta"><span>🔴 CRITICAL</span></div></div>
     </div>
   </section>
 
   <section id="contact">
-    <h2>// CONTACT</h2>
-    <div class="terminal">
-      <p class="prompt">cat .contacts</p>
-      <p>HackerOne:  <a href="https://hackerone.com/realridhinofficia" style="color:#00ff41">realridhinofficia</a></p>
-      <p>X/Twitter:  <a href="https://x.com/c_y_p_h3r" style="color:#00ff41">@c_y_p_h3r</a></p>
-      <p>GitHub:     <a href="https://github.com/ridhinva" style="color:#00ff41">ridhinva</a></p>
-      <p>Email:      ridhinofficial@gmail.com</p>
+    <h2 class="section-title"><span>//</span> CONTACT</h2>
+    <div class="contact-grid">
+      <a class="contact-card" href="https://hackerone.com/realridhinofficia" target="_blank">
+        <span class="icon">🔴</span>
+        <span class="label">HACKERONE</span>
+        <span class="value">realridhinofficia</span>
+      </a>
+      <a class="contact-card" href="https://github.com/ridhinva" target="_blank">
+        <span class="icon">🐙</span>
+        <span class="label">GITHUB</span>
+        <span class="value">ridhinva</span>
+      </a>
+      <a class="contact-card" href="https://x.com/c_y_p_h3r" target="_blank">
+        <span class="icon">🐦</span>
+        <span class="label">X / TWITTER</span>
+        <span class="value">@c_y_p_h3r</span>
+      </a>
+      <a class="contact-card" href="mailto:ridhinofficial@gmail.com">
+        <span class="icon">✉️</span>
+        <span class="label">EMAIL</span>
+        <span class="value">ridhinofficial@gmail.com</span>
+      </a>
     </div>
-    <div class="terminal" style="margin-top:20px; text-align:center;">
-      <p style="font-size: 11px; color: #005500;">
-        [STATUS: ACTIVE]
-      </p>
+    <div style="margin-top:35px;text-align:center;">
+      <p style="font-size:11px;color:var(--gray);letter-spacing:3px;">[ STATUS: ACTIVE  //  OPEN FOR COLLAB ]</p>
     </div>
   </section>
 
   <footer>
-    > SYSTEM: ridhinva.github.io  |  © 2026  |  root@ridhinva:~# _
+    <p>SYSTEM: ridhinva.github.io  |  © 2026  |  root@ridhinva:~# _</p>
+    <p style="margin-top:8px;color:var(--dim);font-size:10px;">> Matrix rain // 3D particles // Neon glow</p>
   </footer>
 
   <script>
-    const canvas = document.getElementById('matrix');
+    // ─── 3D Particle Network ───
+    const canvas = document.getElementById('particle3d');
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    let W, H;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize);
 
-    const chars = '0101010101010101CVE20269082EXPLOITPWNEDHACKEDROOT';
-    const fontSize = 12;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
+    const PARTICLE_COUNT = 100;
+    const particles = [];
+    const CONNECTION_DIST = 130;
 
-    function draw() {
-      ctx.fillStyle = 'rgba(10, 10, 10, 0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#00ff41';
-      ctx.font = fontSize + 'px monospace';
-      for (let i = 0; i < drops.length; i++) {
-        const text = chars[Math.floor(Math.random() * chars.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
-      }
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x: Math.random() * W, y: Math.random() * H,
+        z: Math.random() * 600 - 300,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        vz: (Math.random() - 0.5) * 0.2,
+      });
     }
-    setInterval(draw, 40);
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+
+    let mouseX = W / 2, mouseY = H / 2;
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+    function project(x, y, z) {
+      const fov = 400;
+      const scale = fov / (fov + z);
+      return { x: x * scale + W / 2, y: y * scale + H / 2, scale };
+    }
+
+    function drawParticles3d() {
+      ctx.clearRect(0, 0, W, H);
+
+      // Mouse influence
+      const mx = mouseX - W / 2;
+      const my = mouseY - H / 2;
+
+      for (let p of particles) {
+        p.vx += (Math.random() - 0.5) * 0.03 + (mx - p.x) * 0.00001;
+        p.vy += (Math.random() - 0.5) * 0.03 + (my - p.y) * 0.00001;
+        p.vz += (Math.random() - 0.5) * 0.01;
+        p.vx *= 0.98; p.vy *= 0.98; p.vz *= 0.98;
+        p.x += p.vx; p.y += p.vy; p.z += p.vz;
+        if (p.z > 300) p.z = -300;
+        if (p.z < -300) p.z = 300;
+        if (p.x > W * 1.5) p.x = -W * 0.5;
+        if (p.x < -W * 0.5) p.x = W * 1.5;
+        if (p.y > H * 1.5) p.y = -H * 0.5;
+        if (p.y < -H * 0.5) p.y = H * 1.5;
+      }
+
+      // Sort by z for depth
+      particles.sort((a, b) => a.z - b.z);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p1 = project(particles[i].x, particles[i].y, particles[i].z);
+        ctx.beginPath();
+        ctx.arc(p1.x, p1.y, 2 * p1.scale, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,255,65,${0.3 * p1.scale})`;
+        ctx.fill();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = project(particles[j].x, particles[j].y, particles[j].z);
+          const dx = p1.x - p2.x, dy = p1.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < CONNECTION_DIST) {
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            const alpha = (1 - dist / CONNECTION_DIST) * 0.2 * Math.min(p1.scale, p2.scale);
+            ctx.strokeStyle = `rgba(0,255,65,${alpha})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(drawParticles3d);
+    }
+    drawParticles3d();
+
+    // ─── Typewriter ───
+    const phrases = [
+      '$ whoami → Bug Bounty Hunter',
+      '$ cat /etc/pwned → 15+ exploit tools',
+      '$ nmap -sV target → Web | API | Infra',
+      '$ ./exploit.sh → CVE-2026-9082',
+      '$ hackThePlanet(); // ACTIVE',
+    ];
+    let phraseIdx = 0, charIdx = 0, isDeleting = false;
+    const el = document.getElementById('typedText');
+    function typeEffect() {
+      const current = phrases[phraseIdx];
+      if (!isDeleting) {
+        el.textContent = current.substring(0, charIdx + 1);
+        charIdx++;
+        if (charIdx === current.length) { isDeleting = true; setTimeout(typeEffect, 2000); return; }
+      } else {
+        el.textContent = current.substring(0, charIdx - 1);
+        charIdx--;
+        if (charIdx === 0) { isDeleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; }
+      }
+      setTimeout(typeEffect, isDeleting ? 30 : 70);
+    }
+    typeEffect();
+
+    // ─── Skill bars on scroll ───
+    const skillObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const fills = entry.target.querySelectorAll('.fill');
+          fills.forEach(f => {
+            const pct = f.closest('[data-pct]')?.dataset.pct || 0;
+            setTimeout(() => { f.style.width = pct + '%'; }, 200);
+          });
+        }
+      });
+    }, { threshold: 0.2 });
+    document.querySelectorAll('.skill-group').forEach(el => skillObserver.observe(el));
+
+    // ─── Fade-in observer ───
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+
+    // ─── 3D Tilt on cards ───
+    document.querySelectorAll('[data-tilt], .repo-card, .contact-card, .skill-group').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateZ(15px)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(800px) rotateY(0deg) rotateX(0deg) translateZ(0)';
+      });
     });
+
+    // ─── Floating background symbols ───
+    const floatContainer = document.getElementById('floatContainer');
+    const symbols = ['{', '}', '[', ']', '<', '>', '_', '/', '\\', '|', '*', '&', '%', '$', '#', '@', '!', '?', '+', '=', '~', '`'];
+    for (let i = 0; i < 30; i++) {
+      const span = document.createElement('span');
+      span.className = 'float-particle';
+      span.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      span.style.left = Math.random() * 100 + '%';
+      span.style.fontSize = (8 + Math.random() * 16) + 'px';
+      span.style.animationDuration = (15 + Math.random() * 25) + 's';
+      span.style.animationDelay = Math.random() * 20 + 's';
+      span.style.opacity = 0.03 + Math.random() * 0.08;
+      floatContainer.appendChild(span);
+    }
   </script>
 </body>
 </html>
