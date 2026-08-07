@@ -1,0 +1,23 @@
+name: Profile CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check README exists
+        run: test -f README.md && echo "README.md exists"
+      - name: Check links in README
+        run: |
+          pip install markdown-link-check
+          markdown-link-check README.md || true
+      - name: Validate HTML
+        run: |
+          pip install html5validator
+          html5validator --root . || true
